@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageShell } from "../components/ui/PageShell";
 import { ProjectStage } from "../components/sections/ProjectSection";
 import { AssistantSection } from "../components/sections/AssistantSection";
-import { profile, projects } from "../data/portfolio";
+import { profile, projects as staticProjects } from "../data/portfolio";
+import { apiService } from "../services/api";
 
 export function HomePage() {
+  const [projects, setProjects] = useState(staticProjects);
   const [activeProject, setActiveProject] = useState(1);
-  const featured = projects.filter((project) => ["Featured", "Full Stack", "Data Analytics", "AI/ML"].includes(project.category)).slice(0, 4);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const data = await apiService.getProjects();
+        if (data.projects && data.projects.length > 0) {
+          setProjects(data.projects);
+        }
+      } catch (error) {
+        console.error("Failed to load projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  const featured = projects.filter((project) => ["Featured", "Full Stack", "AI/ML"].includes(project.category) || project.status === "Featured").slice(0, 4);
   const visibleProjects = featured.map((project, index) => ({ ...project, active: index === activeProject }));
-  const moveProject = (step) => setActiveProject((current) => (current + step + visibleProjects.length) % visibleProjects.length);
+  const moveProject = (step) => setActiveProject((current) => (current + step + (visibleProjects.length || 1)) % (visibleProjects.length || 1));
 
   return (
     <PageShell>

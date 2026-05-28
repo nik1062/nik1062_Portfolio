@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Github, ExternalLink, Sparkles } from "lucide-react";
 import { PageShell } from "../components/ui/PageShell";
 import { CaseBlock } from "../components/ui/CaseBlock";
-import { projects } from "../data/portfolio";
+import { projects as staticProjects } from "../data/portfolio";
+import { apiService } from "../services/api";
 
 export function ProjectDetailPage() {
   const { slug } = useParams();
-  const project = projects.find((item) => item.slug === slug) || projects[0];
+  const [project, setProject] = useState(staticProjects.find((item) => item.slug === slug) || staticProjects[0]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadProject() {
+      try {
+        const data = await apiService.getProjects();
+        const found = data.projects.find((p) => p.slug === slug);
+        if (found) setProject(found);
+      } catch (error) {
+        console.error("Failed to load project detail:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProject();
+  }, [slug]);
+
+  if (loading) return <PageShell><p style={{ textAlign: "center", padding: "100px 0" }}>Loading case study...</p></PageShell>;
 
   return (
     <PageShell>

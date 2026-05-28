@@ -1,12 +1,12 @@
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+
+import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import mongoose from "mongoose";
 import apiRouter from "./routes/api.js";
 import { apiLimiter } from "./middleware/rateLimiter.js";
-
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5050;
