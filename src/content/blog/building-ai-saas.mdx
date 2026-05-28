@@ -1,0 +1,31 @@
+export const frontmatter = {
+  title: "Building an AI SaaS with React and Node",
+  category: "Full Stack AI",
+  read: "6 min",
+  copy: "A brief look at how I structured the ColdMailForge platform to integrate OpenAI and Razorpay smoothly."
+};
+
+### The Challenge
+When building **ColdMailForge**, the main hurdle wasn't just calling the OpenAI API—it was managing the state between the frontend (React), the backend (Node), and the payment gateway (Razorpay) seamlessly.
+
+### The Architecture
+1. **Frontend:** React 18 with Vite for speed.
+2. **Backend:** Node.js/Express acting as a secure proxy to OpenAI to protect API keys.
+3. **Database:** MongoDB to store user credits and generated email sequences.
+
+```javascript
+// Example of how the backend proxies the AI request
+app.post('/api/generate', async (req, res) => {
+  const user = await getUser(req.user.id);
+  if (user.credits < 1) return res.status(402).send("Insufficient credits");
+  
+  const completion = await openai.createCompletion({
+    prompt: req.body.prompt
+  });
+  
+  await decrementCredit(user.id);
+  res.json({ email: completion.data.choices[0].text });
+});
+```
+
+*This MDX system allows me to write technical articles naturally while retaining full React component support!*
