@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:5050/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5050/api";
 
 async function handleResponse(response) {
   const data = await response.json();
@@ -50,9 +50,24 @@ export const apiService = {
     return handleResponse(response);
   },
 
+  async getAILogs(token) {
+    const response = await fetch(`${API_BASE_URL}/ai-logs`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    return handleResponse(response);
+  },
+
   // Projects
-  async getProjects() {
-    const response = await fetch(`${API_BASE_URL}/projects`);
+  async getProjects(admin = false) {
+    const url = admin ? `${API_BASE_URL}/projects?admin=true` : `${API_BASE_URL}/projects`;
+    const response = await fetch(url);
+    return handleResponse(response);
+  },
+
+  async trackProjectView(slug) {
+    const response = await fetch(`${API_BASE_URL}/projects/${slug}/view`, { method: "POST" });
     return handleResponse(response);
   },
 
@@ -79,8 +94,14 @@ export const apiService = {
   },
 
   // Blogs
-  async getBlogs() {
-    const response = await fetch(`${API_BASE_URL}/blogs`);
+  async getBlogs(admin = false) {
+    const url = admin ? `${API_BASE_URL}/blogs?admin=true` : `${API_BASE_URL}/blogs`;
+    const response = await fetch(url);
+    return handleResponse(response);
+  },
+
+  async trackBlogView(slug) {
+    const response = await fetch(`${API_BASE_URL}/blogs/${slug}/view`, { method: "POST" });
     return handleResponse(response);
   },
 

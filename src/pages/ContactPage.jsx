@@ -5,6 +5,7 @@ import { PageHero } from "../components/ui/PageHero";
 import { profile } from "../data/portfolio";
 import { apiService } from "../services/api";
 import { useToast } from "../components/ui/Toast";
+import { SEO } from "../components/common/SEO";
 
 export function ContactPage() {
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ export function ContactPage() {
 
   return (
     <PageShell>
+      <SEO title="Contact" description="Get in touch for internships, collaborations, or technical inquiries." slug="/contact" />
       <PageHero eyebrow="Contact" title="Open to internships, collaborations, and useful projects." copy="Use the form, email, GitHub, or LinkedIn. The form connects to the Express backend." />
       <section className="section contact-card">
         <div>

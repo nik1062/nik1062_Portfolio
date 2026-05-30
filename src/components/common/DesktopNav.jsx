@@ -14,6 +14,12 @@ export function DesktopNav() {
         </NavLink>
       ))}
       <NavLink to="/blog">Blog</NavLink>
+      <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12, paddingRight: 20 }}>
+        <div className="status-dot" style={{ position: "relative", width: 8, height: 8, borderRadius: "50%", background: "#4caf50", boxShadow: "0 0 10px #4caf50" }}>
+          <div style={{ position: "absolute", inset: -2, borderRadius: "50%", border: "2px solid #4caf50", animation: "pulse 2s infinite" }} />
+        </div>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "var(--soft)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Available for hire</span>
+      </div>
     </nav>
   );
 }

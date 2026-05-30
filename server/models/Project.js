@@ -15,7 +15,11 @@ const projectSchema = new mongoose.Schema(
     tags: [{ type: String }],
     highlights: [{ type: String }],
     visual: { type: String, default: "data" },
-    private: { type: Boolean, default: false }
+    private: { type: Boolean, default: false },
+    isPublished: { type: Boolean, default: true },
+    views: { type: Number, default: 0 },
+    metaTitle: { type: String },
+    metaDescription: { type: String }
   },
   { timestamps: true }
 );

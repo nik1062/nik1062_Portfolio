@@ -8,7 +8,11 @@ const blogSchema = new mongoose.Schema(
     readTime: { type: String, default: "5 min" },
     copy: { type: String, required: true }, // Short description
     content: { type: String, required: true }, // Full Markdown content
-    author: { type: String, default: "Nikunj Kumar" }
+    author: { type: String, default: "Nikunj Kumar" },
+    isPublished: { type: Boolean, default: true },
+    views: { type: Number, default: 0 },
+    metaTitle: { type: String },
+    metaDescription: { type: String }
   },
   { timestamps: true }
 );

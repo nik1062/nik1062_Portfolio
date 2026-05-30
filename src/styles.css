@@ -661,18 +661,25 @@ main {
 
 .skill-logo-card {
   display: grid;
-  min-height: 112px;
+  min-height: 130px;
   place-items: center;
-  gap: 10px;
-  padding: 14px 10px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.035);
+  gap: 14px;
+  padding: 20px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.07);
+  transition: 240ms ease;
+}
+
+.skill-logo-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(245, 166, 35, 0.5);
+  transform: translateY(-4px);
 }
 
 .skill-logo-card img {
-  width: 38px;
-  height: 38px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
 }
 
@@ -694,6 +701,7 @@ main {
   gap: 16px;
 }
 
+.skills-grid article,
 .proof-grid article,
 .highlight-grid article,
 .resume-card,
@@ -1421,4 +1429,91 @@ main {
 
 .mdx-content strong {
   color: #fff;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  70% { transform: scale(2.5); opacity: 0; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Tech Marquee */
+.tech-marquee-container {
+  width: 100%;
+  overflow: hidden;
+  padding: 32px 0;
+  background: transparent;
+  margin: 10px 0 40px;
+  position: relative;
+  display: flex;
+}
+
+.tech-marquee-container::before,
+.tech-marquee-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  width: 80px;
+  height: 100%;
+}
+
+.tech-marquee-container::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+
+.tech-marquee-container::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
+.tech-marquee-content {
+  display: flex;
+  white-space: nowrap;
+  gap: 60px;
+}
+
+.marquee-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 300ms ease;
+}
+
+.marquee-item img {
+  width: 64px;
+  height: 64px;
+  opacity: 0.9;
+  transition: 300ms ease;
+}
+
+.marquee-item:hover {
+  transform: scale(1.15);
+}
+
+.marquee-item:hover img {
+  opacity: 1;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable, .printable * {
+    visibility: visible;
+  }
+  .printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  body {
+    background: none;
+  }
+  .no-print {
+    display: none !important;
+  }
 }

@@ -2,6 +2,8 @@ import React from "react";
 import { PageShell } from "../components/ui/PageShell";
 import { PageHero } from "../components/ui/PageHero";
 import { ProofCard } from "../components/ui/ProofCard";
+import { TechMarquee } from "../components/ui/TechMarquee";
+import { SEO } from "../components/common/SEO";
 import { skills, skillGroups } from "../data/portfolio";
 
 export function SkillsPage() {
@@ -13,7 +15,11 @@ export function SkillsPage() {
 
   return (
     <PageShell>
+      <SEO title="Skills & Competencies" description="Technical stack expertise and real-world project proof." slug="/skills" />
       <PageHero eyebrow="Skills" title="Logo-based skills with project proof." copy="No percentage bars. Each skill is connected to a real project, workflow, or portfolio signal." />
+      
+      <TechMarquee />
+
       <section className="section">
         <div className="skills-grid">
           {skillGroups.map((skill) => (

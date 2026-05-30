@@ -2,11 +2,14 @@ import React from "react";
 import { PageShell } from "../components/ui/PageShell";
 import { PageHero } from "../components/ui/PageHero";
 import { Timeline } from "../components/ui/Timeline";
+import { QualityBadge } from "../components/ui/QualityBadge";
+import { SEO } from "../components/common/SEO";
 import { profile } from "../data/portfolio";
 
 export function AboutPage() {
   return (
     <PageShell>
+      <SEO title="About" description="Learn more about Nikunj Kumar's background, journey, and technical philosophy." slug="/about" />
       <PageHero eyebrow="About" title="A builder who connects frontend polish with AI-backed systems." copy="My strongest profile is full-stack development, supported by AI/data automation, DevOps basics, and mobile app development." />
       <section className="section split">
         <div className="about-card">
@@ -21,6 +24,8 @@ export function AboutPage() {
             <span>CGPA 8.5 / 10</span>
             <span>English, Hindi</span>
           </div>
+          
+          <QualityBadge />
         </div>
         <Timeline />
       </section>

@@ -4,6 +4,7 @@ import { PageHero } from "../components/ui/PageHero";
 import { ProjectCard } from "../components/sections/ProjectSection";
 import { projects as staticProjects, projectCategories } from "../data/portfolio";
 import { apiService } from "../services/api";
+import { SEO } from "../components/common/SEO";
 
 export function ProjectsPage() {
   const [projects, setProjects] = useState(staticProjects);
@@ -30,6 +31,7 @@ export function ProjectsPage() {
 
   return (
     <PageShell>
+      <SEO title="Projects Portfolio" description="A showcase of full-stack and AI-driven engineering projects." slug="/projects" />
       <PageHero eyebrow="Projects" title="Filterable project gallery." copy="A curated view of your best public projects, plus a clean placeholder for private work that can be shown as case studies without exposing source code." />
       <section className="section">
         <div className="filter-row">

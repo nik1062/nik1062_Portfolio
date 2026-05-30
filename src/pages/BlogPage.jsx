@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { useLocation } from "react-router-dom";
 import { PageShell } from "../components/ui/PageShell";
 import { PageHero } from "../components/ui/PageHero";
 import { apiService } from "../services/api";
@@ -8,6 +9,7 @@ export function BlogPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedPost, setExpandedPost] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     async function loadPosts() {
@@ -15,6 +17,12 @@ export function BlogPage() {
         const data = await apiService.getBlogs();
         if (data.blogs && data.blogs.length > 0) {
           setPosts(data.blogs);
+          
+          // Check if we came from command palette with a specific post
+          if (location.state?.postId) {
+            const target = data.blogs.find(b => b._id === location.state.postId);
+            if (target) setExpandedPost(target);
+          }
         }
       } catch (error) {
         console.error("Failed to load blogs:", error);
@@ -23,7 +31,7 @@ export function BlogPage() {
       }
     }
     loadPosts();
-  }, []);
+  }, [location.state]);
 
   if (expandedPost) {
     return (

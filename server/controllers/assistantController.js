@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Project } from "../models/Project.js";
 import { Blog } from "../models/Blog.js";
+import { AILog } from "../models/AILog.js";
 
 function fallbackAssistant(question) {
   const q = question.toLowerCase();
@@ -51,22 +52,52 @@ Contact: nikunjkumar1062@gmail.com, +91 93342 98148.
 
   if (!apiKey) {
     console.log("GEMINI_API_KEY not found. Using fallback assistant.");
-    return res.json({ ok: true, answer: fallbackAssistant(question) });
+    const answer = fallbackAssistant(question);
+    // Log fallback
+    try {
+      await AILog.create({ question, answer });
+    } catch (e) {}
+    return res.json({ ok: true, answer });
   }
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: portfolioContext
     });
 
     const result = await model.generateContent(question);
     const answer = result.response.text();
     
+    // Log the interaction
+    try {
+      await AILog.create({ question, answer });
+    } catch (logErr) {
+      console.error("Failed to log AI query:", logErr);
+    }
+
     return res.json({ ok: true, answer });
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return res.json({ ok: true, answer: fallbackAssistant(question) });
+    const fallback = fallbackAssistant(question);
+    
+    // Log the fallback interaction
+    try {
+      await AILog.create({ question, answer: fallback });
+    } catch (logErr) {
+      console.error("Failed to log AI query (fallback):", logErr);
+    }
+
+    return res.json({ ok: true, answer: fallback });
+  }
+};
+
+export const getAILogs = async (req, res) => {
+  try {
+    const logs = await AILog.find().sort({ createdAt: -1 }).limit(100);
+    res.json({ ok: true, logs });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: "Failed to fetch AI logs" });
   }
 };
