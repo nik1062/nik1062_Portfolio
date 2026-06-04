@@ -7,8 +7,8 @@ import { useToast } from "../components/ui/Toast";
 import { projects as portfolioProjects } from "../data/portfolio";
 
 // Rich Text Editor
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const slugify = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
@@ -495,7 +495,7 @@ function BlogsManager({ blogs, token, onRefresh, onDelete }) {
           </div>
           <label>Short Summary <input name="copy" defaultValue={editingBlog?.copy} placeholder="One sentence summary..." required /></label>
           <label>Content (Rich Text Editor)</label>
-          <div className="quill-editor" style={{ marginBottom: 20, background: "white", color: "black", borderRadius: 8 }}>
+          <div className="quill-editor-container" style={{ marginBottom: 20, borderRadius: 8 }}>
             <ReactQuill theme="snow" value={content} onChange={setContent} modules={QUILL_MODULES} style={{ height: 300, marginBottom: 40 }} />
           </div>
           <div style={{ display: "flex", gap: 12, marginTop: 20 }}>

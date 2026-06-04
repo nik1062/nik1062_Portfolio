@@ -345,6 +345,21 @@ export const projects = [
     highlights: ["No public source required", "Can show screenshots", "Can use private-repo badge", "Great for serious work"],
     visual: "devops",
     private: true
+  },
+  {
+    slug: "eduhub-dashboard",
+    title: "EduHub Dashboard",
+    year: "2026",
+    status: "Live",
+    category: "Frontend",
+    repo: "https://github.com/nik1062/EduHub-dashboard",
+    live: "https://edu-hub-dashboard.vercel.app",
+    summary: "A dashboard for the EduHub learning platform, built with TypeScript and hosted on Vercel.",
+    problem: "A centralized dashboard is needed to manage and visualize the data for the EduHub platform.",
+    outcome: "Developed a responsive and interactive dashboard for the EduHub platform.",
+    tags: ["TypeScript", "React", "Vercel"],
+    highlights: ["Data visualization", "Interactive charts", "Responsive design"],
+    visual: "data"
   }
 ];
 

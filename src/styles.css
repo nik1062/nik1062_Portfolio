@@ -1517,3 +1517,31 @@ main {
     display: none !important;
   }
 }
+
+/* Quill Editor Theme */
+.quill-editor-container .ql-toolbar {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.quill-editor-container .ql-container {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: var(--text);
+}
+
+.quill-editor-container .ql-editor {
+  color: var(--text);
+}
+
+.quill-editor-container .ql-snow .ql-stroke {
+  stroke: var(--muted);
+}
+
+.quill-editor-container .ql-snow .ql-picker-label {
+  color: var(--muted);
+}
