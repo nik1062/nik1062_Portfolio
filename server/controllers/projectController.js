@@ -1,5 +1,5 @@
 import { Project } from "../models/Project.js";
-import { purgeCache } from "../services/cloudflare.js";
+
 
 export const getProjects = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ export const getProjects = async (req, res) => {
 export const createProject = async (req, res) => {
   try {
     const project = await Project.create(req.body);
-    await purgeCache();
+
     res.status(201).json({ ok: true, project });
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message });
@@ -24,7 +24,7 @@ export const createProject = async (req, res) => {
 export const deleteProject = async (req, res) => {
   try {
     await Project.findByIdAndDelete(req.params.id);
-    await purgeCache();
+
     res.json({ ok: true, message: "Project deleted" });
   } catch (error) {
     res.status(400).json({ ok: false, error: "Failed to delete project" });

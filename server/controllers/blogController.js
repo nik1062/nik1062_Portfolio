@@ -1,5 +1,5 @@
 import { Blog } from "../models/Blog.js";
-import { purgeCache } from "../services/cloudflare.js";
+
 
 export const getBlogs = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ export const getBlogs = async (req, res) => {
 export const createBlog = async (req, res) => {
   try {
     const blog = await Blog.create(req.body);
-    await purgeCache();
+
     res.status(201).json({ ok: true, blog });
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message });
@@ -26,7 +26,7 @@ export const updateBlog = async (req, res) => {
     const { id } = req.params;
     const blog = await Blog.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
     if (!blog) return res.status(404).json({ ok: false, error: "Blog post not found" });
-    await purgeCache();
+
     res.json({ ok: true, blog });
   } catch (error) {
     if (error.code === 11000) {
@@ -39,7 +39,7 @@ export const updateBlog = async (req, res) => {
 export const deleteBlog = async (req, res) => {
   try {
     await Blog.findByIdAndDelete(req.params.id);
-    await purgeCache();
+
     res.json({ ok: true, message: "Blog deleted" });
   } catch (error) {
     res.status(400).json({ ok: false, error: "Failed to delete blog" });
