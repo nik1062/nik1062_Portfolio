@@ -41,6 +41,12 @@ async function connectDatabase() {
 app.use("/api", async (req, res, next) => {
   await connectDatabase();
   app.set("databaseConnected", isConnected);
+  if (!isConnected) {
+    return res.status(500).json({
+      ok: false,
+      error: "Database connection failed. Please ensure your MONGODB_URI is correctly set in Vercel environment variables, and that your MongoDB Atlas IP Whitelist allows access from all IPs (0.0.0.0/0)."
+    });
+  }
   next();
 }, apiRouter);
 

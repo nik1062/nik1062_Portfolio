@@ -79,7 +79,15 @@ app.get("/sitemap.xml", async (req, res) => {
 });
 
 // Routes
-app.use("/api", apiRouter);
+app.use("/api", (req, res, next) => {
+  if (!req.app.get("databaseConnected")) {
+    return res.status(500).json({
+      ok: false,
+      error: "Database connection failed. Please ensure MongoDB is running and MONGODB_URI is correct in your local .env file."
+    });
+  }
+  next();
+}, apiRouter);
 
 app.listen(port, () => {
   console.log(`Portfolio API running on http://127.0.0.1:${port}`);
