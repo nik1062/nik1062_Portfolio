@@ -15,11 +15,21 @@ export function ProjectsPage() {
     async function loadProjects() {
       try {
         const data = await apiService.getProjects();
-        if (data.projects && data.projects.length > 0) {
-          setProjectsList(data.projects);
-          setLoading(false);
-          return;
-        }
+        const dbProjects = data.projects || [];
+        const merged = [...staticProjects];
+        
+        dbProjects.forEach(dbProj => {
+          const index = merged.findIndex(p => p.slug === dbProj.slug);
+          if (index !== -1) {
+            merged[index] = dbProj;
+          } else {
+            merged.push(dbProj);
+          }
+        });
+        
+        setProjectsList(merged);
+        setLoading(false);
+        return;
       } catch (error) {
         console.error("Failed to load projects from API, using static fallback:", error);
       }

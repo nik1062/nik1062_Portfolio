@@ -16,17 +16,27 @@ export function BlogPage() {
     async function loadPosts() {
       try {
         const data = await apiService.getBlogs();
-        if (data.blogs && data.blogs.length > 0) {
-          setPosts(data.blogs);
-          
-          // Check if we came from command palette with a specific post
-          if (location.state?.postId) {
-            const target = data.blogs.find(b => b._id === location.state.postId);
-            if (target) setExpandedPost(target);
+        const dbBlogs = data.blogs || [];
+        const merged = [...staticBlogs];
+        
+        dbBlogs.forEach(dbBlog => {
+          const index = merged.findIndex(b => b.title === dbBlog.title);
+          if (index !== -1) {
+            merged[index] = { ...merged[index], ...dbBlog };
+          } else {
+            merged.push(dbBlog);
           }
-          setLoading(false);
-          return;
+        });
+        
+        merged.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setPosts(merged);
+        
+        if (location.state?.postId) {
+          const target = merged.find(b => b._id === location.state.postId);
+          if (target) setExpandedPost(target);
         }
+        setLoading(false);
+        return;
       } catch (error) {
         console.error("Failed to load blogs from API, falling back to local static logs:", error);
       }
