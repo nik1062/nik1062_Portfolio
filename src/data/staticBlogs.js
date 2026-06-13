@@ -369,5 +369,227 @@ When presenting to the judges, we bypassed slideshows and jumped directly into a
 
 The judges loved the immediate practical utility, sleek visual UI, and functional integration of code analysis. We secured **1st place**, validating our belief that AI tools should focus on reducing developer overhead with smooth, interactive interfaces.`,
     createdAt: "2026-05-24T18:00:00.000Z"
+  },
+  {
+    _id: "static-blog-5",
+    title: "Building an n8n email assistant with Gemini",
+    category: "Automation",
+    readTime: "4 min",
+    copy: "A practical workflow for transforming prompts into professional email drafts and Gmail actions.",
+    content: `### The Power of Automated Context
+
+For busy developers and business owners, email triage is a constant drain on focus. Traditional auto-replies look mechanical, while fully automated AI responses risk making embarrassing errors. The sweet spot is an automated assistant that **drafts** contextual email replies for you to review before hitting send.
+
+Using **n8n** (a node-based workflow automation platform) and **Google Gemini**, I built an assistant that monitors incoming emails, classifies their intent, references context files, and writes high-quality drafts directly into my Gmail account.
+
+---
+
+### The n8n Workflow Design
+
+The workflow consists of four main functional sections:
+
+\`\`\`
+[ Gmail Trigger ] ---> [ Filter (Unread/Category) ] ---> [ Gemini Node (Draft reply) ] ---> [ Gmail Create Draft ]
+\`\`\`
+
+1. **Gmail Trigger Node:** Polls Gmail every 5 minutes looking for unread emails in the primary inbox.
+2. **Filter Node:** Restricts triage to professional categories, ignoring promotional newsletters and spam.
+3. **Gemini Node:** Takes the sender's name, email subject, and body, and prompts the LLM to draft a reply using system context.
+4. **Gmail Create Draft Node:** Creates a new draft reply threaded to the original conversation.
+
+---
+
+### Prompt Engineering for Email Classification
+
+The core value of the assistant lies in the instructions given to Gemini. Rather than letting the LLM write arbitrary text, we enforce strict copywriting rules:
+
+\`\`\`
+System Instructions:
+You are an AI assistant acting on behalf of Nikunj Kumar. 
+Review the incoming email and draft a reply that is:
+1. Professional, polite, and concise.
+2. Formatted with appropriate spacing (no massive blocks of text).
+3. Classified based on intent:
+   - If it is a recruiter inquiry: Express interest and reference the resume PDF URL.
+   - If it is a collaboration request: Suggest scheduling a call via my Calendly link.
+   - If it is spam or a cold sales pitch: Output "SKIP_DRAFT".
+
+Incoming Email:
+From: {{ $json.from.email }}
+Subject: {{ $json.subject }}
+Body: {{ $json.text }}
+\`\`\`
+
+We configure the n8n flow to evaluate the Gemini response. If the output contains \`SKIP_DRAFT\`, we terminate the execution chain, keeping the drafts folder clutter-free.
+
+---
+
+### Security and Implementation Details
+
+- **OAuth 2.0 Authentication:** Connecting n8n to Gmail requires setting up a Google Cloud Project and creating OAuth credentials. This ensures the assistant access remains restricted to your custom scopes.
+- **Self-Hosting n8n:** To keep costs low and secure absolute privacy over email payloads, the n8n instance is self-hosted on a local server using a lightweight Docker container.`,
+    createdAt: "2026-05-20T12:00:00.000Z"
+  },
+  {
+    _id: "static-blog-6",
+    title: "Power BI and finance dashboards as portfolio proof",
+    category: "Data",
+    readTime: "5 min",
+    copy: "Why dashboards should tell a story, not just show charts.",
+    content: `### Constructing a Visual Narrative
+
+Many developers believe that data analytics is simply a matter of loading a database table into Power BI, dragging columns onto a canvas, and rendering standard pie charts. In reality, data visualization is an exercise in communication. A dashboard should lead the viewer through a visual story, helping them identify trends and anomalies at a glance.
+
+When building my financial analytics dashboards, I wanted to showcase that BI is not just about writing queries—it is about mapping raw numbers to key business insights.
+
+---
+
+### Core Principles of BI Layout Design
+
+To minimize cognitive load, I follow a strict visual hierarchy:
+
+| Element | Placement | Purpose |
+| :--- | :--- | :--- |
+| **Global Filters** | Top Left / Sidebar | Allows users to slice data by Year, Category, or Region |
+| **Headline Cards** | Top Header | Displays vital KPIs (Total Revenue, YoY Growth, Gross Margin) |
+| **Trend Lines** | Center Body | Shows temporal changes (Monthly sales vs. Target budgets) |
+| **Breakdown Tables** | Bottom Area | Provides detailed transactional audit trails |
+
+#### Color Systems
+Avoid using default browser colors. I use a unified HSL color scheme tailored to the client's brand. For example, a dark mode charcoal background with golden/amber accents for highlight values. Only use vibrant colors (like coral red or emerald green) to signal alerts or success metrics.
+
+---
+
+### Writing Custom DAX Formulas
+
+To display time-comparative analytics (such as Year-to-Date totals and Year-over-Year growth), standard drag-and-drop metrics are insufficient. We must write customized **DAX (Data Analysis Expressions)** formulas:
+
+\`\`\`dax
+// Cumulative Year-To-Date (YTD) Revenue
+YTD_Revenue = CALCULATE(
+    SUM(Sales[Amount]),
+    DATESYTD('Calendar'[Date])
+)
+
+// Year-over-Year (YoY) Growth Percentage
+YoY_Revenue_Growth = 
+VAR PriorYearRevenue = CALCULATE(
+    [YTD_Revenue],
+    SAMEPERIODLASTYEAR('Calendar'[Date])
+)
+RETURN
+    DIVIDE([YTD_Revenue] - PriorYearRevenue, PriorYearRevenue, 0)
+\`\`\`
+
+---
+
+### Why Analytics Matters for Developers
+
+For software engineers, understanding business metrics is a superpower. Whether you are building a SaaS platform, a mobile application, or a POS system, you are ultimately generating data. Knowing how to consume that data using SQL, transform it with Power Query, and visualize it with Power BI shows that you can connect code to business value.`,
+    createdAt: "2026-05-15T15:00:00.000Z"
+  },
+  {
+    _id: "static-blog-7",
+    title: "Dockerizing a MERN-style project for deployment",
+    category: "DevOps",
+    readTime: "5 min",
+    copy: "Notes on environment variables, build steps, image size, and deployment confidence.",
+    content: `### Eliminating 'It Works on My Machine'
+
+One of the most frustrating bottlenecks in software development occurs when an application runs perfectly on your local machine but crashes immediately upon cloud deployment. This is caused by environmental differences: node versions, missing global modules, local database configurations, and OS differences.
+
+Containerization with **Docker** solves this by bundling your application code, node runtime, database dependencies, and configurations into a portable image that runs identically anywhere.
+
+---
+
+### Multi-Stage Dockerfile for Frontend (React/Vite)
+
+To keep production images small and secure, we use a **multi-stage build**. We build the React production assets in a heavy Node container and copy the minified assets into a lightweight Nginx web server container:
+
+\`\`\`dockerfile
+# Stage 1: Build the production bundle
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Stage 2: Serve using Nginx
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+\`\`\`
+
+By splitting the build, our final production image contains only the static HTML/CSS/JS and Nginx, reducing the final image footprint from over **800MB** to under **25MB**!
+
+---
+
+### Dockerfile for Backend (Node/Express)
+
+For the Express backend, we also use a lightweight Alpine image, copy package dependencies, install only production modules, and expose the port:
+
+\`\`\`dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+EXPOSE 5050
+ENV NODE_ENV=production
+CMD ["node", "server/index.js"]
+\`\`\`
+
+---
+
+### Local Orchestration with Docker-Compose
+
+To orchestrate the frontend client, backend api, and a local MongoDB instance concurrently, we define a \`docker-compose.yml\` file:
+
+\`\`\`yaml
+version: '3.8'
+
+services:
+  database:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "5050:5050"
+    environment:
+      - MONGODB_URI=mongodb://database:27017/portfolio
+      - JWT_SECRET=local_dev_secret
+    depends_on:
+      - database
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
+\`\`\`
+
+---
+
+### Key Takeaways
+
+1. **Caching Layers:** Place your \`COPY package*.json\` and \`RUN npm install\` statements *before* copying the rest of your code. This allows Docker to cache the dependencies layer, making subsequent builds compile in seconds.
+2. **Environment Isolation:** Never hardcode secrets in your Dockerfiles. Use the \`environment\` fields in your orchestration file or inject them at runtime through container orchestration tools (like ECS or Kubernetes).`,
+    createdAt: "2026-05-10T10:00:00.000Z"
   }
 ];
