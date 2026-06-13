@@ -32,6 +32,7 @@ export function AdminPage() {
   const [aiLogs, setAiLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
+  const [dbConnected, setDbConnected] = useState(true);
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -129,9 +130,14 @@ export function AdminPage() {
     try {
       const data = await apiService.getMessages(token);
       setMessages(data.messages || []);
+      setDbConnected(true);
     } catch (error) {
       console.error("Fetch Messages Error:", error);
-      addToast("Session expired or unauthorized. Please logout and login again.", "error");
+      if (error.message && error.message.includes("Database connection failed")) {
+        setDbConnected(false);
+      } else {
+        addToast("Session expired or unauthorized. Please logout and login again.", "error");
+      }
     }
   };
 
@@ -139,21 +145,36 @@ export function AdminPage() {
     try {
       const data = await apiService.getProjects(true);
       setProjects(data.projects || []);
-    } catch (error) {}
+      setDbConnected(true);
+    } catch (error) {
+      if (error.message && error.message.includes("Database connection failed")) {
+        setDbConnected(false);
+      }
+    }
   };
 
   const fetchBlogs = async () => {
     try {
       const data = await apiService.getBlogs(true);
       setBlogs(data.blogs || []);
-    } catch (error) {}
+      setDbConnected(true);
+    } catch (error) {
+      if (error.message && error.message.includes("Database connection failed")) {
+        setDbConnected(false);
+      }
+    }
   };
 
   const fetchAiLogs = async () => {
     try {
       const data = await apiService.getAILogs(token);
       setAiLogs(data.logs || []);
-    } catch (error) {}
+      setDbConnected(true);
+    } catch (error) {
+      if (error.message && error.message.includes("Database connection failed")) {
+        setDbConnected(false);
+      }
+    }
   };
 
   const handleDeleteProject = async (id) => {
@@ -203,6 +224,23 @@ export function AdminPage() {
       <PageHero eyebrow="Admin Access" title="Content Management" copy="Manage your messages, projects, and daily blogs from one central place." />
       
       <section className="section">
+        {!dbConnected && (
+          <div className="about-card" style={{ border: "1px solid #ff5a5f", background: "rgba(255, 90, 95, 0.05)", padding: 20, marginBottom: 32, borderRadius: 12 }}>
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <span style={{ fontSize: 20 }}>⚠️</span>
+              <div>
+                <strong style={{ color: "#ff5a5f", fontSize: 16, display: "block", marginBottom: 6 }}>Database Connection Offline</strong>
+                <p style={{ color: "var(--muted)", fontSize: 14, margin: 0, lineHeight: 1.5 }}>
+                  The application failed to connect to MongoDB Atlas. Your previously published blogs, drafts, projects, and contact messages cannot be retrieved.
+                </p>
+                <p style={{ color: "var(--soft)", fontSize: 13, marginTop: 10, marginBottom: 0 }}>
+                  Please ensure your Vercel project environment variables (specifically <strong>MONGODB_URI</strong>) are configured correctly and that your MongoDB Atlas cluster allows connections from all IP addresses (IP Whitelist: <code>0.0.0.0/0</code>).
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div style={{ marginBottom: 24, display: "flex", gap: 12 }}>
           <button className="secondary-button" onClick={handleSeed} disabled={isSeeding}>
             {isSeeding ? "Importing projects..." : "Seed Projects from Code"}
