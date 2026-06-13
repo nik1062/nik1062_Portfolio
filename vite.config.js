@@ -8,4 +8,12 @@ export default defineConfig({
     { enforce: 'pre', ...mdx() },
     react()
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:5050',
+        changeOrigin: true
+      }
+    }
+  }
 })
