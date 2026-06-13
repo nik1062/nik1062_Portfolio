@@ -1,14 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PageShell } from "../components/ui/PageShell";
 import { PageHero } from "../components/ui/PageHero";
 import { ProjectCard } from "../components/sections/ProjectSection";
-import { projects, projectCategories } from "../data/portfolio";
+import { projects as staticProjects, projectCategories } from "../data/portfolio";
+import { apiService } from "../services/api";
 import { SEO } from "../components/common/SEO";
 
 export function ProjectsPage() {
   const [filter, setFilter] = useState("All");
+  const [projectsList, setProjectsList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = filter === "All" ? projects : projects.filter((project) => project.category === filter || project.status === filter);
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const data = await apiService.getProjects();
+        if (data.projects && data.projects.length > 0) {
+          setProjectsList(data.projects);
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to load projects from API, using static fallback:", error);
+      }
+      setProjectsList(staticProjects);
+      setLoading(false);
+    }
+    loadProjects();
+  }, []);
+
+  const filtered = filter === "All" 
+    ? projectsList 
+    : projectsList.filter((project) => project.category === filter || project.status === filter);
 
   return (
     <PageShell>
@@ -22,11 +45,17 @@ export function ProjectsPage() {
             </button>
           ))}
         </div>
-        <div className="project-grid-full">
-          {filtered.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
-        </div>
+        {loading ? (
+          <div style={{ padding: "100px 0", textAlign: "center" }}>
+            <p style={{ color: "var(--muted)", fontFamily: "monospace" }}>Loading projects gallery...</p>
+          </div>
+        ) : (
+          <div className="project-grid-full">
+            {filtered.map((project) => (
+              <ProjectCard key={project.slug || project._id} project={project} />
+            ))}
+          </div>
+        )}
       </section>
     </PageShell>
   );

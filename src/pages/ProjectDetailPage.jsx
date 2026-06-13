@@ -1,15 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { PageShell } from "../components/ui/PageShell";
 import { CaseBlock } from "../components/ui/CaseBlock";
-import { projects } from "../data/portfolio";
+import { projects as staticProjects } from "../data/portfolio";
+import { apiService } from "../services/api";
 import { SEO } from "../components/common/SEO";
 import { Github, ExternalLink, Sparkles, ToggleLeft, ToggleRight, Code, Info } from "lucide-react";
 
 export function ProjectDetailPage() {
   const { slug } = useParams();
-  const project = projects.find((item) => item.slug === slug) || projects[0];
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("user");
+
+  useEffect(() => {
+    async function loadProject() {
+      try {
+        const data = await apiService.getProjects();
+        if (data.projects && data.projects.length > 0) {
+          const target = data.projects.find((item) => item.slug === slug);
+          if (target) {
+            setProject(target);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load project details from database:", error);
+      }
+      
+      // Fallback
+      const target = staticProjects.find((item) => item.slug === slug) || staticProjects[0];
+      setProject(target);
+      setLoading(false);
+    }
+    loadProject();
+  }, [slug]);
+
+  if (loading || !project) {
+    return (
+      <PageShell>
+        <div style={{ padding: "150px 0", textAlign: "center" }}>
+          <div className="avatar" style={{ margin: "0 auto 20px", width: 60, height: 60, fontSize: 20 }}>NK</div>
+          <p style={{ color: "var(--muted)", fontFamily: "monospace" }}>Loading project blueprints...</p>
+        </div>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell>
