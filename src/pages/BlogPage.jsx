@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { PageShell } from "../components/ui/PageShell";
 import { PageHero } from "../components/ui/PageHero";
 import { apiService } from "../services/api";
+import { staticBlogs } from "../data/staticBlogs";
 
 export function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -23,12 +24,20 @@ export function BlogPage() {
             const target = data.blogs.find(b => b._id === location.state.postId);
             if (target) setExpandedPost(target);
           }
+          setLoading(false);
+          return;
         }
       } catch (error) {
-        console.error("Failed to load blogs:", error);
-      } finally {
-        setLoading(false);
+        console.error("Failed to load blogs from API, falling back to local static logs:", error);
       }
+      
+      // Fallback to static local blogs
+      setPosts(staticBlogs);
+      if (location.state?.postId) {
+        const target = staticBlogs.find(b => b._id === location.state.postId);
+        if (target) setExpandedPost(target);
+      }
+      setLoading(false);
     }
     loadPosts();
   }, [location.state]);

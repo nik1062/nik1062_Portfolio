@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X, Folder, BookOpen, Command } from "lucide-react";
 import { apiService } from "../../services/api";
+import { projects as staticProjects } from "../../data/portfolio";
+import { staticBlogs } from "../../data/staticBlogs";
 
 export function CommandPalette({ open, setOpen }) {
   const [query, setQuery] = useState("");
@@ -11,8 +13,29 @@ export function CommandPalette({ open, setOpen }) {
 
   useEffect(() => {
     if (open) {
-      apiService.getProjects().then(data => setProjects(data.projects || [])).catch(() => {});
-      apiService.getBlogs().then(data => setBlogs(data.blogs || [])).catch(() => {});
+      apiService.getProjects()
+        .then(data => {
+          if (data.projects && data.projects.length > 0) {
+            setProjects(data.projects);
+          } else {
+            setProjects(staticProjects);
+          }
+        })
+        .catch(() => {
+          setProjects(staticProjects);
+        });
+
+      apiService.getBlogs()
+        .then(data => {
+          if (data.blogs && data.blogs.length > 0) {
+            setBlogs(data.blogs);
+          } else {
+            setBlogs(staticBlogs);
+          }
+        })
+        .catch(() => {
+          setBlogs(staticBlogs);
+        });
     }
   }, [open]);
 
