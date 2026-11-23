@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Github, Linkedin, Menu, X, FileText, ChevronDown, Download } from "lucide-react";
+import { Search, Github, Linkedin, Menu, X, ChevronDown, Download, CheckCircle2 } from "lucide-react";
 import { profile } from "../data/portfolio";
 
 export default function Navbar({ onOpenCommand, activeTrack }) {
@@ -9,23 +9,23 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
   return (
     <header className="site-nav" role="banner">
       <div className="container nav-inner">
-        {/* Brand */}
+        {/* Brand Monogram & Name */}
         <a href="#hero" className="brand">
           <div className="brand-badge" aria-hidden="true">
             NK
           </div>
           <div className="brand-text">
             <span className="brand-name">{profile.name}</span>
-            <span className="brand-role">Full-Stack & DevOps</span>
+            <span className="brand-meta">Full-Stack & DevOps / SRE</span>
           </div>
         </a>
 
-        {/* Desktop Links */}
+        {/* Desktop Navigation Links */}
         <nav className="nav-links" aria-label="Main Navigation">
           <a href="#case-studies" className="nav-link">
             Systems
           </a>
-          <a href="#track-toggle" className="nav-link">
+          <a href="#track-switch" className="nav-link">
             {activeTrack === "devops" ? "DevOps Track" : "Full-Stack Track"}
           </a>
           <a href="#skills" className="nav-link">
@@ -38,6 +38,12 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
 
         {/* Action Controls */}
         <div className="nav-actions">
+          {/* Status Badge */}
+          <span className="live-pulse-badge nav-pulse-badge" style={{ fontSize: "12px", fontFamily: "var(--font-mono)", marginRight: "4px" }}>
+            <span className="pulse-dot" aria-hidden="true" />
+            <span className="nav-status-text">Operational</span>
+          </span>
+
           {/* Cmd+K trigger button */}
           <button
             type="button"
@@ -55,7 +61,7 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
             <button
               type="button"
               className="icon-btn"
-              style={{ width: "auto", padding: "0 10px", gap: 6, fontSize: "12px", fontFamily: "var(--font-mono)" }}
+              style={{ width: "auto", padding: "0 12px", gap: 6, fontSize: "12px", fontFamily: "var(--font-mono)" }}
               onClick={() => setResumeOpen(!resumeOpen)}
               aria-label="Resume options"
             >
@@ -139,7 +145,7 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
           <a href="#case-studies" className="nav-link" onClick={() => setMobileOpen(false)}>
             Flagship Systems
           </a>
-          <a href="#track-toggle" className="nav-link" onClick={() => setMobileOpen(false)}>
+          <a href="#track-switch" className="nav-link" onClick={() => setMobileOpen(false)}>
             Track Switch ({activeTrack})
           </a>
           <a href="#skills" className="nav-link" onClick={() => setMobileOpen(false)}>
@@ -151,14 +157,14 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
           <button
             type="button"
             className="btn-primary"
-            style={{ height: "36px", fontSize: "13px", justifyContent: "center" }}
+            style={{ height: "38px", fontSize: "13px", justifyContent: "center" }}
             onClick={() => {
               setMobileOpen(false);
               onOpenCommand();
             }}
           >
             <Search size={14} />
-            Open Command Palette
+            Open Command Palette (⌘K)
           </button>
         </div>
       )}
