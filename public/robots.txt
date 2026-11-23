@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nikunjkumar.com/sitemap.xml
+Sitemap: https://nik1062-portfolio.vercel.app/sitemap.xml
