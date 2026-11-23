@@ -1,62 +1,133 @@
-import React, { useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { Terminal } from "lucide-react";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import React, { useState, Suspense, lazy } from "react";
+import { BrowserRouter, HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import SEO from "./components/SEO";
+import Navbar from "./components/Navbar";
+import StatusStrip from "./components/StatusStrip";
+import Hero from "./components/Hero";
+import TrackToggle from "./components/TrackToggle";
+import CaseStudies from "./components/CaseStudies";
+import SkillsMatrix from "./components/SkillsMatrix";
+import SecondaryWork from "./components/SecondaryWork";
+import CommandPalette from "./components/CommandPalette";
+import Footer from "./components/Footer";
 
-// Common Components
-import { DesktopNav } from "./components/common/DesktopNav";
-import { MobileHeader } from "./components/common/MobileHeader";
-import { ProfileRail } from "./components/common/ProfileRail";
-import { BottomNav } from "./components/common/BottomNav";
-import { CommandPalette } from "./components/common/CommandPalette";
+// Lazy-load admin & secondary components for code-splitting & Lighthouse speed
+const LoginPage = lazy(() => import("./components/LoginPage"));
+const AdminPanel = lazy(() => import("./components/AdminPanel"));
+const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
-// Pages
-import { HomePage } from "./pages/HomePage";
-import { AboutPage } from "./pages/AboutPage";
-import { ProjectsPage } from "./pages/ProjectsPage";
-import { ProjectDetailPage } from "./pages/ProjectDetailPage";
-import { SkillsPage } from "./pages/SkillsPage";
-import { CredentialsPage } from "./pages/CredentialsPage";
-import { ResumePage } from "./pages/ResumePage";
-import { BlogPage } from "./pages/BlogPage";
-import { NowPage } from "./pages/NowPage";
-import { ContactPage } from "./pages/ContactPage";
-import { AdminPage } from "./pages/AdminPage";
-
-function App() {
-  const [commandOpen, setCommandOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
+function PortfolioHome({ activeTrack, setActiveTrack, onOpenCommand }) {
   return (
-    <HashRouter>
-      <div className="ambient-grid" />
-      <DesktopNav />
-      <MobileHeader menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      <ProfileRail />
-      <main>
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-            <Route path="/skills" element={<SkillsPage />} />
-            <Route path="/credentials" element={<CredentialsPage />} />
-            <Route path="/resume" element={<ResumePage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/now" element={<NowPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-          </Routes>
-        </AnimatePresence>
+    <div className="obsidian-canvas">
+      <SEO />
+      <StatusStrip />
+      <Navbar onOpenCommand={onOpenCommand} activeTrack={activeTrack} />
+      <main id="main-content">
+        <Hero />
+        <TrackToggle activeTrack={activeTrack} onTrackChange={setActiveTrack} />
+        <CaseStudies activeTrack={activeTrack} />
+        <SkillsMatrix activeTrack={activeTrack} />
+        <SecondaryWork />
       </main>
-      <CommandPalette open={commandOpen} setOpen={setCommandOpen} />
-      <button className="terminal-toggle" type="button" onClick={() => setCommandOpen(true)} aria-label="Open command palette">
-        <Terminal size={24} />
-      </button>
-      <BottomNav />
-    </HashRouter>
+      <Footer />
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  const [activeTrack, setActiveTrack] = useState("fullstack"); // "fullstack" or "devops"
+  const [commandOpen, setCommandOpen] = useState(false);
+
+  return (
+    <HashRouter>
+      <Suspense fallback={<div style={{ padding: "40px", textAlign: "center", color: "var(--text-muted)" }}>Loading...</div>}>
+        <Routes>
+          {/* Main Redesigned Experience */}
+          <Route
+            path="/"
+            element={
+              <PortfolioHome
+                activeTrack={activeTrack}
+                setActiveTrack={setActiveTrack}
+                onOpenCommand={() => setCommandOpen(true)}
+              />
+            }
+          />
+
+          {/* Direct deep-link route aliases that route to the corresponding sections on Home */}
+          <Route
+            path="/projects"
+            element={
+              <PortfolioHome
+                activeTrack={activeTrack}
+                setActiveTrack={setActiveTrack}
+                onOpenCommand={() => setCommandOpen(true)}
+              />
+            }
+          />
+          <Route
+            path="/resume"
+            element={
+              <PortfolioHome
+                activeTrack={activeTrack}
+                setActiveTrack={setActiveTrack}
+                onOpenCommand={() => setCommandOpen(true)}
+              />
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <PortfolioHome
+                activeTrack={activeTrack}
+                setActiveTrack={setActiveTrack}
+                onOpenCommand={() => setCommandOpen(true)}
+              />
+            }
+          />
+          <Route
+            path="/credentials"
+            element={
+              <PortfolioHome
+                activeTrack={activeTrack}
+                setActiveTrack={setActiveTrack}
+                onOpenCommand={() => setCommandOpen(true)}
+              />
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <PortfolioHome
+                activeTrack={activeTrack}
+                setActiveTrack={setActiveTrack}
+                onOpenCommand={() => setCommandOpen(true)}
+              />
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+
+      {/* Global Command Palette (Cmd/Ctrl + K) */}
+      <CommandPalette
+        open={commandOpen}
+        setOpen={setCommandOpen}
+        onSelectTrack={(track) => setActiveTrack(track)}
+      />
+    </HashRouter>
+  );
+}
