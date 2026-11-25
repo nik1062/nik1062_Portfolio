@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Search, FileText, ArrowRight, X, ExternalLink, Code2, Server, Layers, Mail, Github, Linkedin } from "lucide-react";
+import { Search, FileText, ArrowRight, X, ExternalLink, Code2, Server, Layers, Mail, Github, Linkedin, Palette } from "lucide-react";
 import { flagshipProjects, profile } from "../data/portfolio";
 
-export default function CommandPalette({ open, setOpen, onSelectTrack }) {
+export default function CommandPalette({ open, setOpen, onSelectTrack, currentTheme, onThemeChange }) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
@@ -81,6 +81,43 @@ export default function CommandPalette({ open, setOpen, onSelectTrack }) {
       icon: Server,
       action: () => {
         onSelectTrack("devops");
+        setOpen(false);
+      }
+    },
+    // Theme Switchers
+    {
+      id: "theme-terminal",
+      category: "Color System",
+      title: "Industrial Terminal (Default)",
+      subtitle: "Phosphor lime (#86D65A) on deep green-black surfaces",
+      badge: currentTheme === "terminal" ? "Active" : "Theme",
+      icon: Palette,
+      action: () => {
+        if (onThemeChange) onThemeChange("terminal");
+        setOpen(false);
+      }
+    },
+    {
+      id: "theme-obsidian",
+      category: "Color System",
+      title: "Obsidian Minimalist",
+      subtitle: "Warm champagne (#E4D5B7) on near-black surfaces",
+      badge: currentTheme === "obsidian" ? "Active" : "Theme",
+      icon: Palette,
+      action: () => {
+        if (onThemeChange) onThemeChange("obsidian");
+        setOpen(false);
+      }
+    },
+    {
+      id: "theme-slate",
+      category: "Color System",
+      title: "Deep Space Slate",
+      subtitle: "Mission copper (#F08A5D) on cool blue-slate surfaces",
+      badge: currentTheme === "slate" ? "Active" : "Theme",
+      icon: Palette,
+      action: () => {
+        if (onThemeChange) onThemeChange("slate");
         setOpen(false);
       }
     },

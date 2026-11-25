@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { Search, Github, Linkedin, Menu, X, ChevronDown, Download, CheckCircle2 } from "lucide-react";
+import { Search, Github, Linkedin, Menu, X, ChevronDown, Download, Palette } from "lucide-react";
 import { profile } from "../data/portfolio";
 
-export default function Navbar({ onOpenCommand, activeTrack }) {
+export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
+
+  const themeList = [
+    { id: "terminal", name: "Industrial Terminal", accent: "#86D65A" },
+    { id: "obsidian", name: "Obsidian Minimalist", accent: "#E4D5B7" },
+    { id: "slate", name: "Deep Space Slate", accent: "#F08A5D" }
+  ];
 
   return (
     <header className="site-nav" role="banner">
@@ -56,13 +63,57 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
             <span className="kbd-shortcut">⌘K</span>
           </button>
 
+          {/* Theme Switcher Dropdown */}
+          <div className="theme-dropdown-wrap">
+            <button
+              type="button"
+              className="icon-btn theme-toggle-btn"
+              onClick={() => {
+                setThemeOpen(!themeOpen);
+                setResumeOpen(false);
+              }}
+              aria-label="Switch color theme"
+              title="Switch color theme"
+            >
+              <Palette size={13} />
+              <span className="theme-swatch-dot" aria-hidden="true" />
+              <ChevronDown size={11} />
+            </button>
+
+            {themeOpen && (
+              <div className="theme-menu" onMouseLeave={() => setThemeOpen(false)}>
+                <div className="theme-menu-title">Color System</div>
+                {themeList.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    className={`theme-option-item ${currentTheme === t.id ? "active" : ""}`}
+                    onClick={() => {
+                      if (onThemeChange) onThemeChange(t.id);
+                      setThemeOpen(false);
+                    }}
+                  >
+                    <span style={{ display: "flex", alignItems: "center" }}>
+                      <span className="theme-dot" style={{ background: t.accent }} />
+                      <span>{t.name}</span>
+                    </span>
+                    {currentTheme === t.id && <span style={{ fontSize: "11px" }}>✓</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Quick Resume Dropdown */}
           <div className="resume-dropdown-wrap">
             <button
               type="button"
               className="icon-btn"
               style={{ width: "auto", padding: "0 12px", gap: 6, fontSize: "12px", fontFamily: "var(--font-mono)" }}
-              onClick={() => setResumeOpen(!resumeOpen)}
+              onClick={() => {
+                setResumeOpen(!resumeOpen);
+                setThemeOpen(false);
+              }}
               aria-label="Resume options"
             >
               <Download size={13} />
@@ -154,6 +205,28 @@ export default function Navbar({ onOpenCommand, activeTrack }) {
           <a href="#experience" className="nav-link" onClick={() => setMobileOpen(false)}>
             Experience & Honors
           </a>
+
+          {/* Mobile Theme Chips */}
+          <div className="mobile-theme-section">
+            <span className="mobile-theme-label">Theme Palette</span>
+            <div className="mobile-theme-options">
+              {themeList.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={`mobile-theme-chip ${currentTheme === t.id ? "active" : ""}`}
+                  onClick={() => {
+                    if (onThemeChange) onThemeChange(t.id);
+                    setMobileOpen(false);
+                  }}
+                >
+                  <span className="theme-dot" style={{ background: t.accent, width: 8, height: 8 }} />
+                  <span>{t.name.split(" ")[0]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             type="button"
             className="btn-primary"

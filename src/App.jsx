@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { BrowserRouter, HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import SEO from "./components/SEO";
 import Navbar from "./components/Navbar";
@@ -16,12 +16,17 @@ const LoginPage = lazy(() => import("./components/LoginPage"));
 const AdminPanel = lazy(() => import("./components/AdminPanel"));
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
-function PortfolioHome({ activeTrack, setActiveTrack, onOpenCommand }) {
+function PortfolioHome({ activeTrack, setActiveTrack, onOpenCommand, currentTheme, setCurrentTheme }) {
   return (
     <div className="obsidian-canvas">
       <SEO />
       <StatusStrip />
-      <Navbar onOpenCommand={onOpenCommand} activeTrack={activeTrack} />
+      <Navbar
+        onOpenCommand={onOpenCommand}
+        activeTrack={activeTrack}
+        currentTheme={currentTheme}
+        onThemeChange={setCurrentTheme}
+      />
       <main id="main-content">
         <Hero />
         <TrackToggle activeTrack={activeTrack} onTrackChange={setActiveTrack} />
@@ -36,7 +41,15 @@ function PortfolioHome({ activeTrack, setActiveTrack, onOpenCommand }) {
 
 export default function App() {
   const [activeTrack, setActiveTrack] = useState("fullstack"); // "fullstack" or "devops"
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    return localStorage.getItem("portfolio-theme") || "terminal";
+  });
   const [commandOpen, setCommandOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    localStorage.setItem("portfolio-theme", currentTheme);
+  }, [currentTheme]);
 
   return (
     <HashRouter>
@@ -50,6 +63,8 @@ export default function App() {
                 activeTrack={activeTrack}
                 setActiveTrack={setActiveTrack}
                 onOpenCommand={() => setCommandOpen(true)}
+                currentTheme={currentTheme}
+                setCurrentTheme={setCurrentTheme}
               />
             }
           />
@@ -62,6 +77,8 @@ export default function App() {
                 activeTrack={activeTrack}
                 setActiveTrack={setActiveTrack}
                 onOpenCommand={() => setCommandOpen(true)}
+                currentTheme={currentTheme}
+                setCurrentTheme={setCurrentTheme}
               />
             }
           />
@@ -72,6 +89,8 @@ export default function App() {
                 activeTrack={activeTrack}
                 setActiveTrack={setActiveTrack}
                 onOpenCommand={() => setCommandOpen(true)}
+                currentTheme={currentTheme}
+                setCurrentTheme={setCurrentTheme}
               />
             }
           />
@@ -82,6 +101,8 @@ export default function App() {
                 activeTrack={activeTrack}
                 setActiveTrack={setActiveTrack}
                 onOpenCommand={() => setCommandOpen(true)}
+                currentTheme={currentTheme}
+                setCurrentTheme={setCurrentTheme}
               />
             }
           />
@@ -92,6 +113,8 @@ export default function App() {
                 activeTrack={activeTrack}
                 setActiveTrack={setActiveTrack}
                 onOpenCommand={() => setCommandOpen(true)}
+                currentTheme={currentTheme}
+                setCurrentTheme={setCurrentTheme}
               />
             }
           />
@@ -102,6 +125,8 @@ export default function App() {
                 activeTrack={activeTrack}
                 setActiveTrack={setActiveTrack}
                 onOpenCommand={() => setCommandOpen(true)}
+                currentTheme={currentTheme}
+                setCurrentTheme={setCurrentTheme}
               />
             }
           />
@@ -127,6 +152,8 @@ export default function App() {
         open={commandOpen}
         setOpen={setCommandOpen}
         onSelectTrack={(track) => setActiveTrack(track)}
+        currentTheme={currentTheme}
+        onThemeChange={setCurrentTheme}
       />
     </HashRouter>
   );
