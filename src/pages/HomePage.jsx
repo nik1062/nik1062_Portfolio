@@ -1,130 +1,220 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Download, Github, Star, GitBranch } from "lucide-react";
-import { motion } from "framer-motion";
-import { PageShell } from "../components/ui/PageShell";
-import { ProjectStage } from "../components/sections/ProjectSection";
-import { AssistantSection } from "../components/sections/AssistantSection";
-import { profile, projects as staticProjects } from "../data/portfolio";
-import { apiService } from "../services/api";
-import { githubService } from "../services/github";
+import { ArrowRight, Code2, Zap, User, FileText, Award, Layers, Terminal, Sparkles } from "lucide-react";
+import ThreeCanvas from "../components/ThreeCanvas";
+import Card3D from "../components/Card3D";
+import Hero from "../components/Hero";
+import TrackToggle from "../components/TrackToggle";
+import { flagshipProjects, profile } from "../data/portfolio";
 import { SEO } from "../components/common/SEO";
 
-export function HomePage() {
-  const [projects, setProjects] = useState(staticProjects);
-  const [recentRepos, setRecentRepos] = useState([]);
-  const [activeProject, setActiveProject] = useState(1);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [pData, gData] = await Promise.all([
-          apiService.getProjects(),
-          githubService.getRecentRepos()
-        ]);
-        if (pData.projects && pData.projects.length > 0) setProjects(pData.projects);
-        setRecentRepos(gData.slice(0, 3));
-      } catch (error) {
-        console.error("Failed to load projects:", error);
-      } finally {
-        setLoading(false);
-      }
+export function HomePage({ activeTrack, setActiveTrack }) {
+  const gatewayPortals = [
+    {
+      to: "/projects",
+      title: "Flagship Systems",
+      subtitle: "CodeMeet AI, RecoverForge, MediSync & ColdMailForge architecture flows",
+      badge: "4 Deep Dives",
+      icon: Code2
+    },
+    {
+      to: "/skills",
+      title: "Tech Arsenal & Lab",
+      subtitle: "CRDTs, WebSockets, Docker, AWS EC2, PostgreSQL & Flutter matrix",
+      badge: "Verified Proof",
+      icon: Zap
+    },
+    {
+      to: "/about",
+      title: "Engineering Story",
+      subtitle: "Anna University IT, Founder of Zorbit Studio, NEURA '25 Winner",
+      badge: "Background",
+      icon: User
+    },
+    {
+      to: "/resume",
+      title: "Multi-Role Resume Hub",
+      subtitle: "Direct PDF downloads for Full-Stack, DevOps/SRE, and Mobile roles",
+      badge: "Instant PDF",
+      icon: FileText
     }
-    loadData();
-  }, []);
-
-  const featured = projects.filter((project) => ["Featured", "Full Stack", "AI/ML"].includes(project.category) || project.status === "Featured").slice(0, 4);
-  const visibleProjects = featured.map((project, index) => ({ ...project, active: index === activeProject }));
-  const moveProject = (step) => setActiveProject((current) => (current + step + (visibleProjects.length || 1)) % (visibleProjects.length || 1));
+  ];
 
   return (
-    <PageShell>
-      <SEO title="Full-Stack Developer & AI Specialist" slug="/" />
-      <section className="hero section">
-        <p className="eyebrow">Hello, I am</p>
-        <h1>{profile.name}</h1>
-        <h2>{profile.headline}</h2>
-        <p className="hero-copy">{profile.summary}</p>
-        <div className="hero-actions">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link className="primary-button" to="/projects">
-              View Work
-            </Link>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link className="secondary-button" to="/resume">
-              <Download size={17} />
-              Resume Hub
-            </Link>
-          </motion.div>
+    <div className="home-view" style={{ position: "relative" }}>
+      <SEO title="Full-Stack & DevOps/SRE Engineer" slug="/" />
+
+      {/* 3D Interactive WebGL Scene */}
+      <ThreeCanvas density="medium" height="680px" interactive={true} />
+
+      {/* Hero Workbench with Live MacOS IDE & Webhook Simulation */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Hero />
+      </div>
+
+      {/* Track Toggle */}
+      <div className="container" style={{ marginTop: 12, marginBottom: 28, position: "relative", zIndex: 2 }}>
+        <TrackToggle activeTrack={activeTrack} onTrackChange={setActiveTrack} />
+      </div>
+
+      {/* 3D Gateway Portals */}
+      <section className="container" style={{ padding: "32px 24px 60px", position: "relative", zIndex: 2 }}>
+        <div className="section-header" style={{ marginBottom: 24 }}>
+          <h2 className="section-title" style={{ fontSize: "1.5rem" }}>Engineering Command Center</h2>
+          <p className="section-desc">
+            Explore dedicated deep-dive sections for system architectures, technical proficiencies, credentials, and resumes.
+          </p>
         </div>
-        <div className="hero-metrics">
-          {profile.metrics.map(([number, label]) => (
-            <motion.div key={label} whileHover={{ y: -5 }}>
-              <strong>{number}</strong>
-              <span>{label}</span>
-            </motion.div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+          {gatewayPortals.map((portal) => {
+            const Icon = portal.icon;
+            return (
+              <Card3D key={portal.to}>
+                <Link
+                  to={portal.to}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    padding: "24px 20px",
+                    height: "100%",
+                    minHeight: "170px",
+                    border: "1px solid var(--border-subtle)",
+                    borderTop: "1px solid var(--border-specular)",
+                    borderRadius: "var(--radius-md)",
+                    background: "var(--bg-card)",
+                    textDecoration: "none",
+                    boxShadow: "var(--shadow-card)",
+                    transition: "all 150ms ease"
+                  }}
+                >
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 36,
+                          height: 36,
+                          borderRadius: "var(--radius-sm)",
+                          background: "var(--accent-glow)",
+                          color: "var(--accent)",
+                          border: "1px solid var(--accent-border)"
+                        }}
+                      >
+                        <Icon size={18} />
+                      </div>
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          fontFamily: "var(--font-mono)",
+                          padding: "2px 7px",
+                          borderRadius: "4px",
+                          background: "var(--bg-surface)",
+                          color: "var(--text-muted)",
+                          border: "1px solid var(--border-subtle)"
+                        }}
+                      >
+                        {portal.badge}
+                      </span>
+                    </div>
+
+                    <h3 style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)", margin: "0 0 6px" }}>
+                      {portal.title}
+                    </h3>
+                    <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.45 }}>
+                      {portal.subtitle}
+                    </p>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 16, fontSize: "12px", fontFamily: "var(--font-mono)", color: "var(--accent)" }}>
+                    <span>Launch Section</span>
+                    <ArrowRight size={13} />
+                  </div>
+                </Link>
+              </Card3D>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Flagship Production Systems Overview */}
+      <section className="container" style={{ padding: "0 24px 72px", position: "relative", zIndex: 2 }}>
+        <div className="section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
+          <div>
+            <h2 className="section-title" style={{ fontSize: "1.5rem" }}>Flagship Production Systems</h2>
+            <p className="section-desc">
+              Real products engineered for scale, conflict-free synchronization, and automated fault recovery.
+            </p>
+          </div>
+          <Link to="/projects" className="btn-secondary" style={{ height: 38, fontSize: 13, gap: 6 }}>
+            <span>Explore All Projects</span>
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+          {flagshipProjects.map((project) => (
+            <Card3D key={project.id}>
+              <div
+                style={{
+                  padding: "24px",
+                  border: "1px solid var(--border-subtle)",
+                  borderTop: "1px solid var(--border-specular)",
+                  borderRadius: "var(--radius-md)",
+                  background: "var(--bg-card)",
+                  boxShadow: "var(--shadow-card)",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                    <span className="case-tag-badge">{project.badge}</span>
+                    <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
+                      SYS // {project.primaryTrack.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <h3 style={{ fontSize: "18px", fontWeight: 700, margin: "0 0 6px", color: "var(--text-primary)" }}>
+                    {project.title}
+                  </h3>
+                  <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: "0 0 14px", lineHeight: 1.45 }}>
+                    {project.tagline}
+                  </p>
+
+                  <div className="metric-callout-card" style={{ padding: "8px 12px", marginBottom: 14 }}>
+                    <span style={{ fontSize: "12px", fontFamily: "var(--font-mono)", color: "var(--accent)" }}>
+                      📊 {project.metric}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid var(--border-subtle)", paddingTop: 14 }}>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                    {project.stack.slice(0, 3).map((tech) => (
+                      <span key={tech} className="tech-pill" style={{ fontSize: 11, padding: "2px 7px" }}>
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <Link to={`/projects/${project.slug}`} style={{ color: "var(--accent)", display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontFamily: "var(--font-mono)" }}>
+                    <span>Architecture</span>
+                    <ArrowRight size={12} />
+                  </Link>
+                </div>
+              </div>
+            </Card3D>
           ))}
         </div>
       </section>
-
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Featured Work</p>
-            <h2 className="section-title">A focused set of projects with real product signals.</h2>
-          </div>
-          <div className="project-controls">
-            <motion.button type="button" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => moveProject(-1)} aria-label="Previous project">
-              <ChevronLeft size={18} />
-            </motion.button>
-            <motion.button type="button" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => moveProject(1)} aria-label="Next project">
-              <ChevronRight size={18} />
-            </motion.button>
-          </div>
-        </div>
-        <ProjectStage projects={visibleProjects} onSelect={setActiveProject} />
-        <div className="hero-actions centered">
-          <Link className="secondary-button" to="/projects">
-            Full project gallery
-          </Link>
-          <Link className="secondary-button" to="/now">
-            Currently building
-          </Link>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">GitHub Pulse</p>
-            <h2 className="section-title">Latest Open Source Activity</h2>
-          </div>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
-          {recentRepos.length === 0 ? (
-            <p style={{ color: "var(--muted)" }}>Fetching activity from GitHub...</p>
-          ) : (
-            recentRepos.map(repo => (
-              <motion.a key={repo.id} href={repo.html_url} target="_blank" rel="noopener" className="about-card" style={{ textDecoration: "none", display: "flex", flexDirection: "column" }} whileHover={{ y: -5 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                  <Github size={18} style={{ color: "var(--gold)" }} />
-                  <div style={{ display: "flex", gap: 12, color: "var(--soft)", fontSize: 12 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}><Star size={12} /> {repo.stargazers_count}</span>
-                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}><GitBranch size={12} /> {repo.forks_count}</span>
-                  </div>
-                </div>
-                <h4 style={{ color: "var(--text)", marginBottom: 8 }}>{repo.name}</h4>
-                <p style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.5, marginBottom: 16, flex: 1 }}>{repo.description || "No description provided."}</p>
-                <div style={{ color: "var(--soft)", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>{repo.language || "Shell"}</div>
-              </motion.a>
-            ))
-          )}
-        </div>
-      </section>
-
-      <AssistantSection />
-    </PageShell>
+    </div>
   );
 }
+
+export default HomePage;

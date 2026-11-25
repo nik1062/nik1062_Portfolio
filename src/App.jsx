@@ -1,42 +1,34 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
-import { BrowserRouter, HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import SEO from "./components/SEO";
 import Navbar from "./components/Navbar";
 import StatusStrip from "./components/StatusStrip";
-import Hero from "./components/Hero";
-import TrackToggle from "./components/TrackToggle";
-import CaseStudies from "./components/CaseStudies";
-import SkillsMatrix from "./components/SkillsMatrix";
-import SecondaryWork from "./components/SecondaryWork";
-import CommandPalette from "./components/CommandPalette";
 import Footer from "./components/Footer";
+import CommandPalette from "./components/CommandPalette";
+
+// Multi-Page Views
+import { HomePage } from "./pages/HomePage";
+import { ProjectsPage } from "./pages/ProjectsPage";
+import { ProjectDetailPage } from "./pages/ProjectDetailPage";
+import { SkillsPage } from "./pages/SkillsPage";
+import { AboutPage } from "./pages/AboutPage";
+import { CredentialsPage } from "./pages/CredentialsPage";
+import { ResumePage } from "./pages/ResumePage";
+import { BlogPage } from "./pages/BlogPage";
+import { ContactPage } from "./pages/ContactPage";
 
 // Lazy-load admin & secondary components for code-splitting & Lighthouse speed
 const LoginPage = lazy(() => import("./components/LoginPage"));
 const AdminPanel = lazy(() => import("./components/AdminPanel"));
 const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
 
-function PortfolioHome({ activeTrack, setActiveTrack, onOpenCommand, currentTheme, setCurrentTheme }) {
-  return (
-    <div className="obsidian-canvas">
-      <SEO />
-      <StatusStrip />
-      <Navbar
-        onOpenCommand={onOpenCommand}
-        activeTrack={activeTrack}
-        currentTheme={currentTheme}
-        onThemeChange={setCurrentTheme}
-      />
-      <main id="main-content">
-        <Hero />
-        <TrackToggle activeTrack={activeTrack} onTrackChange={setActiveTrack} />
-        <CaseStudies activeTrack={activeTrack} />
-        <SkillsMatrix activeTrack={activeTrack} />
-        <SecondaryWork />
-      </main>
-      <Footer />
-    </div>
-  );
+// Utility to reset scroll position on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+  return null;
 }
 
 export default function App() {
@@ -53,108 +45,97 @@ export default function App() {
 
   return (
     <HashRouter>
-      <Suspense fallback={<div style={{ padding: "40px", textAlign: "center", color: "var(--text-muted)" }}>Loading...</div>}>
-        <Routes>
-          {/* Main Redesigned Experience */}
-          <Route
-            path="/"
-            element={
-              <PortfolioHome
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-                onOpenCommand={() => setCommandOpen(true)}
-                currentTheme={currentTheme}
-                setCurrentTheme={setCurrentTheme}
-              />
-            }
-          />
+      <ScrollToTop />
+      <div className="obsidian-canvas">
+        <SEO />
+        <StatusStrip />
+        <Navbar
+          onOpenCommand={() => setCommandOpen(true)}
+          currentTheme={currentTheme}
+          onThemeChange={setCurrentTheme}
+        />
 
-          {/* Direct deep-link route aliases that route to the corresponding sections on Home */}
-          <Route
-            path="/projects"
-            element={
-              <PortfolioHome
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-                onOpenCommand={() => setCommandOpen(true)}
-                currentTheme={currentTheme}
-                setCurrentTheme={setCurrentTheme}
-              />
+        <main id="main-content">
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  padding: "100px 20px",
+                  textAlign: "center",
+                  color: "var(--text-muted)",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 13
+                }}
+              >
+                [ESTABLISHING SYSTEM CONNECTION...]
+              </div>
             }
-          />
-          <Route
-            path="/resume"
-            element={
-              <PortfolioHome
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-                onOpenCommand={() => setCommandOpen(true)}
-                currentTheme={currentTheme}
-                setCurrentTheme={setCurrentTheme}
+          >
+            <Routes>
+              {/* Distinct Multi-Page Route Architecture */}
+              <Route
+                path="/"
+                element={<HomePage activeTrack={activeTrack} setActiveTrack={setActiveTrack} />}
               />
-            }
-          />
-          <Route
-            path="/skills"
-            element={
-              <PortfolioHome
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-                onOpenCommand={() => setCommandOpen(true)}
-                currentTheme={currentTheme}
-                setCurrentTheme={setCurrentTheme}
+              <Route
+                path="/projects"
+                element={<ProjectsPage activeTrack={activeTrack} />}
               />
-            }
-          />
-          <Route
-            path="/credentials"
-            element={
-              <PortfolioHome
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-                onOpenCommand={() => setCommandOpen(true)}
-                currentTheme={currentTheme}
-                setCurrentTheme={setCurrentTheme}
+              <Route
+                path="/projects/:slug"
+                element={<ProjectDetailPage />}
               />
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <PortfolioHome
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-                onOpenCommand={() => setCommandOpen(true)}
-                currentTheme={currentTheme}
-                setCurrentTheme={setCurrentTheme}
+              <Route
+                path="/skills"
+                element={<SkillsPage />}
               />
-            }
-          />
+              <Route
+                path="/about"
+                element={<AboutPage />}
+              />
+              <Route
+                path="/credentials"
+                element={<CredentialsPage />}
+              />
+              <Route
+                path="/resume"
+                element={<ResumePage />}
+              />
+              <Route
+                path="/blog"
+                element={<BlogPage />}
+              />
+              <Route
+                path="/contact"
+                element={<ContactPage />}
+              />
 
-          {/* Admin Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminPanel />
-              </ProtectedRoute>
-            }
-          />
+              {/* Protected Administration Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminPanel />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+              {/* Fallback to Home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </main>
 
-      {/* Global Command Palette (Cmd/Ctrl + K) */}
-      <CommandPalette
-        open={commandOpen}
-        setOpen={setCommandOpen}
-        onSelectTrack={(track) => setActiveTrack(track)}
-        currentTheme={currentTheme}
-        onThemeChange={setCurrentTheme}
-      />
+        <Footer />
+
+        {/* Global Command Palette (Cmd/Ctrl + K) */}
+        <CommandPalette
+          isOpen={commandOpen}
+          onClose={() => setCommandOpen(false)}
+          onThemeChange={setCurrentTheme}
+        />
+      </div>
     </HashRouter>
   );
 }

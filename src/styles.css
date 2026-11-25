@@ -292,13 +292,33 @@ button {
 
 .nav-link {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  transition: color 150ms ease;
+  transition: all 150ms ease;
+  text-decoration: none;
+  position: relative;
+  padding: 4px 2px;
 }
 
 .nav-link:hover {
   color: var(--accent);
+}
+
+.nav-link.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .nav-actions {

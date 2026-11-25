@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Search, Github, Linkedin, Menu, X, ChevronDown, Download, Palette } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { Search, Github, Linkedin, Menu, X, ChevronDown, Download, Palette, Layers, Terminal } from "lucide-react";
 import { profile } from "../data/portfolio";
 
-export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThemeChange }) {
+export default function Navbar({ onOpenCommand, currentTheme, onThemeChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
@@ -13,11 +14,22 @@ export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThe
     { id: "slate", name: "Deep Space Slate", accent: "#F08A5D" }
   ];
 
+  const navItems = [
+    { to: "/", label: "Overview", end: true },
+    { to: "/projects", label: "Systems" },
+    { to: "/skills", label: "Skills" },
+    { to: "/about", label: "About" },
+    { to: "/credentials", label: "Credentials" },
+    { to: "/resume", label: "Resume" },
+    { to: "/blog", label: "Blog" },
+    { to: "/contact", label: "Contact" }
+  ];
+
   return (
     <header className="site-nav" role="banner">
       <div className="container nav-inner">
         {/* Brand Monogram & Name */}
-        <a href="#hero" className="brand">
+        <Link to="/" className="brand">
           <div className="brand-badge" aria-hidden="true">
             NK
           </div>
@@ -25,22 +37,20 @@ export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThe
             <span className="brand-name">{profile.name}</span>
             <span className="brand-meta">Full-Stack & DevOps / SRE</span>
           </div>
-        </a>
+        </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Multi-Page Navigation Links */}
         <nav className="nav-links" aria-label="Main Navigation">
-          <a href="#case-studies" className="nav-link">
-            Systems
-          </a>
-          <a href="#track-switch" className="nav-link">
-            {activeTrack === "devops" ? "DevOps Track" : "Full-Stack Track"}
-          </a>
-          <a href="#skills" className="nav-link">
-            Skills Matrix
-          </a>
-          <a href="#experience" className="nav-link">
-            Experience & Honors
-          </a>
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Action Controls */}
@@ -123,6 +133,15 @@ export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThe
 
             {resumeOpen && (
               <div className="resume-menu" style={{ right: 0, left: "auto" }} onMouseLeave={() => setResumeOpen(false)}>
+                <Link
+                  to="/resume"
+                  className="resume-item"
+                  style={{ background: "var(--bg-elevated)", borderBottom: "1px solid var(--border-subtle)" }}
+                  onClick={() => setResumeOpen(false)}
+                >
+                  <strong style={{ color: "var(--accent)" }}>Browse All Resumes →</strong>
+                  <span>Interactive Role Hub</span>
+                </Link>
                 <a
                   href={profile.resumes.fullstack}
                   target="_blank"
@@ -152,6 +171,16 @@ export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThe
                 >
                   <strong>Mobile Developer Resume</strong>
                   <span>Flutter, Dart, Riverpod</span>
+                </a>
+                <a
+                  href={profile.resumes.data}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="resume-item"
+                  onClick={() => setResumeOpen(false)}
+                >
+                  <strong>Data & AI Resume</strong>
+                  <span>Python, Pandas, EDA, GPT-4o</span>
                 </a>
               </div>
             )}
@@ -193,18 +222,18 @@ export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThe
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="mobile-drawer" role="navigation" aria-label="Mobile menu">
-          <a href="#case-studies" className="nav-link" onClick={() => setMobileOpen(false)}>
-            Flagship Systems
-          </a>
-          <a href="#track-switch" className="nav-link" onClick={() => setMobileOpen(false)}>
-            Track Switch ({activeTrack})
-          </a>
-          <a href="#skills" className="nav-link" onClick={() => setMobileOpen(false)}>
-            Skills Matrix
-          </a>
-          <a href="#experience" className="nav-link" onClick={() => setMobileOpen(false)}>
-            Experience & Honors
-          </a>
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+              onClick={() => setMobileOpen(false)}
+              style={{ fontSize: "16px", padding: "8px 0" }}
+            >
+              {item.label}
+            </NavLink>
+          ))}
 
           {/* Mobile Theme Chips */}
           <div className="mobile-theme-section">
@@ -230,14 +259,14 @@ export default function Navbar({ onOpenCommand, activeTrack, currentTheme, onThe
           <button
             type="button"
             className="btn-primary"
-            style={{ height: "38px", fontSize: "13px", justifyContent: "center" }}
+            style={{ height: "38px", fontSize: "13px", justifyContent: "center", marginTop: "12px" }}
             onClick={() => {
               setMobileOpen(false);
               onOpenCommand();
             }}
           >
             <Search size={14} />
-            Open Command Palette (⌘K)
+            <span>Open Command Palette (⌘K)</span>
           </button>
         </div>
       )}

@@ -1,174 +1,161 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { PageShell } from "../components/ui/PageShell";
-import { CaseBlock } from "../components/ui/CaseBlock";
-import { projects as staticProjects } from "../data/portfolio";
-import { apiService } from "../services/api";
+import React from "react";
+import { useParams, Link } from "react-router-dom";
+import { ArrowLeft, Github, ExternalLink, Code2, CheckCircle2, Sparkles, Layers, ShieldCheck, Zap } from "lucide-react";
+import ThreeCanvas from "../components/ThreeCanvas";
+import Card3D from "../components/Card3D";
+import { flagshipProjects, secondaryProjects as staticProjects } from "../data/portfolio";
 import { SEO } from "../components/common/SEO";
-import { Github, ExternalLink, Sparkles, ToggleLeft, ToggleRight, Code, Info } from "lucide-react";
 
 export function ProjectDetailPage() {
   const { slug } = useParams();
-  const [project, setProject] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("user");
 
-  useEffect(() => {
-    async function loadProject() {
-      try {
-        const data = await apiService.getProjects();
-        if (data.projects && data.projects.length > 0) {
-          const target = data.projects.find((item) => item.slug === slug);
-          if (target) {
-            setProject(target);
-            setLoading(false);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load project details from database:", error);
-      }
-      
-      // Fallback
-      const target = staticProjects.find((item) => item.slug === slug) || staticProjects[0];
-      setProject(target);
-      setLoading(false);
-    }
-    loadProject();
-  }, [slug]);
-
-  if (loading || !project) {
-    return (
-      <PageShell>
-        <div style={{ padding: "150px 0", textAlign: "center" }}>
-          <div className="avatar" style={{ margin: "0 auto 20px", width: 60, height: 60, fontSize: 20 }}>NK</div>
-          <p style={{ color: "var(--muted)", fontFamily: "monospace" }}>Loading project blueprints...</p>
-        </div>
-      </PageShell>
-    );
-  }
+  // Find project in flagship or static list
+  const project =
+    flagshipProjects.find((p) => p.slug === slug || p.id === slug) ||
+    staticProjects.find((p) => p.slug === slug) ||
+    flagshipProjects[0];
 
   return (
-    <PageShell>
-      <SEO 
-        title={project.metaTitle || project.title} 
-        description={project.metaDescription || project.summary} 
-        slug={`/projects/${project.slug}`} 
-      />
-      
-      {/* View Mode Toggle */}
-      <div style={{ position: "fixed", bottom: 100, right: 30, zIndex: 100 }}>
-        <button 
-          onClick={() => setViewMode(viewMode === "user" ? "engineer" : "user")}
-          className="about-card"
-          style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: 12, 
-            padding: "12px 20px", 
-            borderRadius: 100,
-            border: "1px solid var(--gold)",
-            background: "rgba(17, 17, 17, 0.9)",
-            cursor: "pointer",
-            boxShadow: "var(--shadow)"
+    <div className="project-detail-view" style={{ position: "relative", minHeight: "85vh" }}>
+      <SEO title={`${project.title} — Architectural Case Study`} description={project.tagline || project.summary} slug={`/projects/${project.slug}`} />
+
+      {/* Atmospheric 3D Canvas */}
+      <ThreeCanvas density="low" height="420px" interactive={true} />
+
+      <div className="container" style={{ paddingTop: 36, paddingBottom: 80, position: "relative", zIndex: 2 }}>
+        {/* Back Link */}
+        <Link
+          to="/projects"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 13,
+            fontFamily: "var(--font-mono)",
+            color: "var(--text-muted)",
+            marginBottom: 28,
+            transition: "color 120ms ease"
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
+        >
+          <ArrowLeft size={14} />
+          <span>Back to Projects Gallery</span>
+        </Link>
+
+        {/* Project Header Banner */}
+        <div
+          style={{
+            padding: "36px 32px",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid var(--border-subtle)",
+            borderTop: "1px solid var(--border-specular)",
+            background: "var(--bg-card)",
+            boxShadow: "var(--shadow-card)",
+            marginBottom: 36
           }}
         >
-          {viewMode === "user" ? <Info size={18} /> : <Code size={18} />}
-          <span style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            {viewMode === "user" ? "Engineer View" : "User View"}
-          </span>
-          {viewMode === "user" ? <ToggleLeft size={20} color="var(--soft)" /> : <ToggleRight size={20} color="var(--gold)" />}
-        </button>
-      </div>
-
-      <section className={`case-hero visual-${project.visual}`}>
-        <div className="project-visual" />
-        <div className="case-content">
-          <p className="eyebrow">{project.status}</p>
-          <h1>{project.title}</h1>
-          <p>{project.summary}</p>
-          <div className="project-tags">
-            {project.tags.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <span className="case-tag-badge">{project.badge || project.category || "Flagship System"}</span>
+            <span style={{ fontSize: 12, fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
+              SYS // {(project.primaryTrack || "FULLSTACK").toUpperCase()}
+            </span>
           </div>
-          <div className="hero-actions">
-            {project.repo && (
-              <a className="primary-button" href={project.repo} target="_blank" rel="noopener">
-                <Github size={16} />
-                GitHub
-              </a>
-            )}
-            {project.live && (
-              <a className="secondary-button" href={project.live} target="_blank" rel="noopener">
-                <ExternalLink size={16} />
-                Live Demo
-              </a>
+
+          <h1 style={{ fontSize: "2.4rem", fontWeight: 800, margin: "0 0 12px", color: "var(--text-primary)" }}>
+            {project.title}
+          </h1>
+          <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: 1.6, maxWidth: 760, margin: "0 0 24px" }}>
+            {project.tagline || project.summary}
+          </p>
+
+          {/* Action Links & Metrics */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+            <div style={{ display: "flex", gap: 10 }}>
+              {project.repo && (
+                <a href={project.repo} target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ height: 40, fontSize: 13, gap: 7 }}>
+                  <Github size={15} />
+                  <span>View Repository</span>
+                </a>
+              )}
+              {project.live && (
+                <a href={project.live} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ height: 40, fontSize: 13, gap: 7 }}>
+                  <ExternalLink size={15} />
+                  <span>Live System</span>
+                </a>
+              )}
+            </div>
+
+            {project.metric && (
+              <div className="metric-callout-card" style={{ padding: "8px 16px", margin: 0 }}>
+                <span style={{ fontSize: 13, fontFamily: "var(--font-mono)", color: "var(--accent)" }}>
+                  📊 {project.metric}
+                </span>
+              </div>
             )}
           </div>
         </div>
-      </section>
 
-      {viewMode === "user" ? (
-        <>
-          <section className="section case-grid">
-            <CaseBlock title="Problem" text={project.problem} />
-            <CaseBlock title="Why I Built It" text="This project strengthens my portfolio by showing a realistic domain, a clear user problem, and implementation decisions beyond basic UI work." />
-            <CaseBlock title="Architecture" text={`Frontend/product layer, data layer, and project documentation are organized around ${project.tags.join(", ")}.`} />
-            <CaseBlock title="Challenges" text="The main challenge is turning a student project into a credible portfolio artifact: clear README, screenshots, meaningful user flow, and honest scope." />
-            <CaseBlock title="Outcome" text={project.outcome} />
-            <CaseBlock title="What I Learned" text="I learned to present work as a product: define the audience, state the problem, show the stack, and explain tradeoffs clearly." />
-          </section>
-          <section className="section">
-            <h2 className="section-title">Feature highlights</h2>
-            <div className="highlight-grid">
-              {project.highlights.map((item) => (
-                <article key={item}>
-                  <Sparkles size={18} />
-                  <span>{item}</span>
-                </article>
+        {/* Deep Case Study Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24, marginBottom: 36 }}>
+          {/* Problem Statement Card */}
+          <Card3D>
+            <div style={{ padding: 28, borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)", background: "var(--bg-card)", height: "100%" }}>
+              <h3 style={{ fontSize: 13, fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--accent)", margin: "0 0 12px" }}>
+                01 // Problem & Failure Mode
+              </h3>
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.65, margin: 0 }}>
+                {project.problem || "Traditional setups suffer from disjointed editing locks, high audio-video latency, and missing automated fault detection, leading to unreliable collaboration states."}
+              </p>
+            </div>
+          </Card3D>
+
+          {/* Architecture & Engineering Decisions */}
+          <Card3D>
+            <div style={{ padding: 28, borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)", background: "var(--bg-card)", height: "100%" }}>
+              <h3 style={{ fontSize: 13, fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--emerald)", margin: "0 0 12px" }}>
+                02 // Architecture & Tradeoffs
+              </h3>
+              <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.65, margin: 0 }}>
+                {project.outcome || "Architected around zero-conflict Operational Transform (Yjs CRDT), WebRTC SFU mesh for low-latency media streams, and atomic idempotency locks to eliminate race conditions."}
+              </p>
+            </div>
+          </Card3D>
+        </div>
+
+        {/* Production Highlights */}
+        {project.highlights && project.highlights.length > 0 && (
+          <div style={{ padding: "28px 32px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)", background: "var(--bg-surface)", marginBottom: 36 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)", margin: "0 0 16px" }}>
+              Technical Implementation Highlights
+            </h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+              {project.highlights.map((h, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <CheckCircle2 size={16} style={{ color: "var(--emerald)", flexShrink: 0, marginTop: 2 }} />
+                  <span style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>{h}</span>
+                </div>
               ))}
             </div>
-          </section>
-        </>
-      ) : (
-        <section className="section">
-          <div className="about-card" style={{ padding: 40 }}>
-            <h2 style={{ color: "var(--gold)", marginBottom: 24 }}>Technical Implementation (Engineer View)</h2>
-            <div style={{ display: "grid", gap: 32 }}>
-              <div>
-                <h4 style={{ color: "var(--text)", marginBottom: 12 }}>System Architecture</h4>
-                <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
-                  The project follows a modular <strong>MERN</strong> architecture. 
-                  Data is managed via <strong>Mongoose</strong> schemas with strict validation. 
-                  The frontend utilizes <strong>React Hooks</strong> for state management and <strong>Framer Motion</strong> for declarative animations.
-                </p>
-              </div>
-              <div>
-                <h4 style={{ color: "var(--text)", marginBottom: 12 }}>Tech Stack & Trade-offs</h4>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-                  {project.tags.map(tag => <span key={tag} style={{ fontSize: 11, background: "var(--panel-2)", padding: "4px 10px", borderRadius: 4, border: "1px solid var(--line)" }}>{tag}</span>)}
-                </div>
-                <p style={{ color: "var(--muted)", lineHeight: 1.6 }}>
-                  Chose <strong>MongoDB</strong> for its flexible document structure, which allowed rapid iteration during the initial design phase. 
-                  For the API, <strong>Node.js</strong> with Express provides a high-performance, asynchronous environment ideal for handling concurrent user requests.
-                </p>
-              </div>
-              <div style={{ background: "#000", padding: 20, borderRadius: 12, border: "1px solid var(--line)", overflowX: "auto" }}>
-                <code style={{ color: "var(--gold-2)", fontSize: 13, fontFamily: "monospace" }}>
-                  {`// High-level Architectural Snippet
-export const ProjectSchema = new Schema({
-  title: { type: String, required: true },
-  slug: { type: String, unique: true },
-  views: { type: Number, default: 0 },
-  isPublished: { type: Boolean, default: false }
-});`}
-                </code>
-              </div>
-            </div>
           </div>
-        </section>
-      )}
-    </PageShell>
+        )}
+
+        {/* Tech Stack Matrix */}
+        <div style={{ padding: "24px 30px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)", background: "var(--bg-card)" }}>
+          <h4 style={{ fontSize: 12, fontFamily: "var(--font-mono)", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 14px" }}>
+            Technologies & Tools Deployed
+          </h4>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {(project.stack || project.tags || []).map((tech) => (
+              <span key={tech} className="tech-pill" style={{ fontSize: 12, padding: "5px 12px" }}>
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
+
+export default ProjectDetailPage;
