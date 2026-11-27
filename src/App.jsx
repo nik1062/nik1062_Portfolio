@@ -40,6 +40,7 @@ import LoginPage from "./components/LoginPage";
 import AdminPanel from "./components/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Magnet from "./components/bits/Magnet/Magnet";
+import GitHubProjectsSection from "./components/GitHubProjectsSection";
 
 const navItems = [
   ["Home", "/", Home],
@@ -312,6 +313,8 @@ function HomePage({ projects }) {
         </div>
       </section>
 
+      <GitHubProjectsSection curatedProjects={projects} limit={3} />
+
       <AssistantSection />
     </PageShell>
   );
@@ -364,6 +367,8 @@ function ProjectsPage({ projects }) {
           ))}
         </div>
       </section>
+
+      <GitHubProjectsSection curatedProjects={projects} />
     </PageShell>
   );
 }

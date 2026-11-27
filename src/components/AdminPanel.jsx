@@ -10,9 +10,13 @@ import {
   CheckCircle, 
   Clock,
   ExternalLink,
-  Plus
+  Plus,
+  Github,
+  Radio,
+  RefreshCw
 } from "lucide-react";
 import SEO from "./SEO";
+import githubData from "../data/github-projects.generated.json";
 
 const AdminPanel = () => {
   const { token, logout } = useAuth();
@@ -139,7 +143,41 @@ const AdminPanel = () => {
                 <p className="muted">You have {messages.filter(m => m.status === "pending").length} unread messages.</p>
                 <div className="hero-actions" style={{ marginTop: "1.5rem" }}>
                   <button className="primary-button" onClick={() => setActiveTab("messages")}>View Messages</button>
-                  <button className="secondary-button" onClick={() => setActiveTab("projects")}>Add Project</button>
+                  <button className="secondary-button" onClick={() => setActiveTab("projects")}>Manage Projects</button>
+                </div>
+              </div>
+
+              {/* GitHub Automation Telemetry */}
+              <div className="about-card" style={{ padding: "1.5rem", marginTop: "1.5rem", border: "1px solid rgba(245, 166, 35, 0.2)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "rgba(245, 166, 35, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#f5a623" }}>
+                      <Github size={20} />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: "1rem" }}>GitHub Discovery Automation</h4>
+                      <p className="muted" style={{ margin: 0, fontSize: "0.8rem" }}>Topic filter: <code>#{githubData?.topic || "portfolio"}</code> • User: <code>@{githubData?.username || "nik1062"}</code></p>
+                    </div>
+                  </div>
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.8rem", color: "#4ade80", background: "rgba(74, 222, 128, 0.1)", padding: "4px 10px", borderRadius: "100px" }}>
+                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80" }} />
+                    Cron Active (6h)
+                  </span>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem", marginTop: "1rem" }}>
+                  <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
+                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>DISCOVERED REPOS</span>
+                    <strong style={{ fontSize: "1.25rem", color: "#f6f3ee" }}>{githubData?.totalDiscovered || 0}</strong>
+                  </div>
+                  <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
+                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>LAST SYNC RUN</span>
+                    <strong style={{ fontSize: "0.9rem", color: "#f6f3ee" }}>{githubData?.lastSynced ? new Date(githubData.lastSynced).toLocaleString() : "Pending"}</strong>
+                  </div>
+                  <div style={{ background: "rgba(255,255,255,0.02)", padding: "1rem", borderRadius: "8px" }}>
+                    <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>PIPELINE ENGINE</span>
+                    <strong style={{ fontSize: "0.9rem", color: "#f5a623" }}>GitHub Actions CI</strong>
+                  </div>
                 </div>
               </div>
             </section>

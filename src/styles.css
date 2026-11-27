@@ -249,7 +249,7 @@ main {
 }
 
 .hero {
-  min-height: 84vh;
+  min-height: clamp(560px, 80vh, 840px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -282,7 +282,7 @@ main {
 }
 
 .page-hero {
-  min-height: 42vh;
+  min-height: clamp(320px, 40vh, 500px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -1348,4 +1348,457 @@ main {
     color: var(--gold);
     background: rgba(245, 166, 35, 0.08);
   }
+
+  .github-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sync-recipe-box {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .recipe-arrow {
+    transform: rotate(90deg);
+  }
 }
+
+/* ==========================================================================
+   LIVE GITHUB DISCOVERY AUTOMATION & UI POLISH
+   ========================================================================== */
+
+.github-sync-section {
+  position: relative;
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.github-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.section-subtitle {
+  color: var(--soft);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 8px;
+  max-width: 620px;
+}
+
+.section-subtitle code {
+  color: var(--gold);
+  background: rgba(245, 166, 35, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+}
+
+.github-telemetry-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(245, 166, 35, 0.08);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.telemetry-beacon {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 10px #4ade80;
+  animation: beaconPulse 2s infinite ease-in-out;
+}
+
+@keyframes beaconPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.telemetry-label {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.telemetry-divider {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.telemetry-time {
+  color: var(--soft);
+}
+
+.github-header-actions .github-view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+/* GitHub Cards Grid */
+.github-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.github-project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+}
+
+.github-project-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(245, 166, 35, 0.4);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(245, 166, 35, 0.2);
+}
+
+.github-card-specular {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(245, 166, 35, 0.07),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.github-project-card:hover .github-card-specular {
+  opacity: 1;
+}
+
+.github-card-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.github-lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: #e5e5e5;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.github-lang-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.github-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--soft);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+}
+
+.stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-time {
+  opacity: 0.75;
+}
+
+.github-card-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.github-card-title a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.github-card-title a:hover {
+  color: var(--gold);
+}
+
+.github-card-desc {
+  color: var(--soft);
+  font-size: 14px;
+  line-height: 1.55;
+  margin-bottom: 16px;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.github-topics-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.github-topic-pill {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--soft);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.github-topic-pill.featured-topic {
+  color: var(--gold);
+  background: rgba(245, 166, 35, 0.12);
+  border-color: rgba(245, 166, 35, 0.3);
+  font-weight: 600;
+}
+
+.github-card-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  flex: 1;
+  text-decoration: none;
+}
+
+/* Empty State Styling */
+.github-empty-state {
+  position: relative;
+  text-align: center;
+  padding: 48px 24px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px dashed rgba(245, 166, 35, 0.3);
+  overflow: hidden;
+}
+
+.empty-state-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.empty-state-icon-box {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  color: var(--gold);
+}
+
+.empty-state-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.empty-state-text {
+  max-width: 540px;
+  margin: 0 auto 24px;
+  color: var(--soft);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.empty-state-text .topic-highlight {
+  color: var(--gold);
+  font-weight: 600;
+  font-family: "JetBrains Mono", monospace;
+  background: rgba(245, 166, 35, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.sync-recipe-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 24px;
+  margin-bottom: 28px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.recipe-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.recipe-step .step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(245, 166, 35, 0.2);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recipe-step code {
+  color: var(--gold);
+  background: rgba(245, 166, 35, 0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.recipe-arrow {
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: bold;
+}
+
+.empty-state-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Skeleton Loading State */
+.github-skeleton-card {
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 4px;
+}
+
+.skeleton-line.title {
+  height: 22px;
+  width: 65%;
+  margin-bottom: 6px;
+}
+
+.skeleton-line.copy {
+  width: 95%;
+}
+
+.skeleton-line.copy.short {
+  width: 50%;
+}
+
+.skeleton-tags {
+  height: 24px;
+  width: 40%;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerAnim 1.6s infinite;
+}
+
+@keyframes shimmerAnim {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* UI Polish: Enhanced Project Filtering buttons */
+.filter-row button {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-row button.active {
+  background: rgba(245, 166, 35, 0.15) !important;
+  color: var(--gold) !important;
+  border-color: rgba(245, 166, 35, 0.5) !important;
+  box-shadow: 0 0 16px -2px rgba(245, 166, 35, 0.25);
+}
+
+/* UI Polish: Responsive Card and Navigation Polish */
+@media (max-width: 640px) {
+  .github-section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .github-header-actions {
+    width: 100%;
+  }
+
+  .github-view-all-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
