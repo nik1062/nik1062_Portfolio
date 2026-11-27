@@ -1,240 +1,285 @@
 export const profile = {
   name: "Nikunj Kumar",
-  title: "Full-Stack & DevOps/SRE Engineer",
-  institution: "Anna University, Chennai",
-  degree: "B.Tech in Information Technology",
-  graduationYear: "2027",
-  cgpa: "8.5 / 10",
-  founder: "Founder of Zorbit Studio",
-  location: "Chennai, Tamil Nadu, India",
+  role: "Full-Stack Developer",
+  location: "Chennai, Tamil Nadu",
   email: "nikunjkumar1062@gmail.com",
   phone: "+91 93342 98148",
   github: "https://github.com/nik1062",
-  linkedin: "https://www.linkedin.com/in/nikunj-kumar-6724b7272",
-  resumes: {
-    fullstack: "/assets/resume/Nikunj-Kumar-FullStack-Resume.pdf",
-    devops: "/assets/resume/Nikunj-Kumar-DevOps-Resume.pdf",
-    mobile: "/assets/resume/Nikunj-Kumar-Mobile-Resume.pdf",
-    data: "/assets/resume/Nikunj-Kumar-Data-Analytics-Resume.pdf"
-  },
-  headline:
-    "Final-year B.Tech IT student at Anna University, Chennai. Founder of Zorbit Studio. Engineering resilient full-stack platforms, real-time collaboration engines, and event-driven DevOps recovery agents.",
+  linkedin: "https://www.linkedin.com/in/nikunj-kumar-ba2728332",
+  resume: "/assets/resume/Nikunj-Kumar-FullStack-Resume.pdf",
+  headline: "Full-stack developer building AI-powered web, data, automation, and product systems.",
   summary:
-    "I specialize in production-grade software: event-driven webhook pipelines with atomic locks, CRDT multiplayer sync with WebRTC, dual-token JWT auth, and containerized cloud deployments on AWS and Docker.",
-  systemStatus: {
-    state: "All Systems Operational",
-    deployTarget: "Vercel Edge Network",
-    ciStatus: "Passing (GitHub Actions)",
-    availability: "Immediate for Campus Placements / SDE-1 / SRE"
-  }
+    "B.Tech IT student at Anna University with hands-on work across React, Node.js, Python, Firebase, MongoDB, Power BI, Flutter, cloud deployment, and AI automation.",
+  metrics: [
+    ["10+", "Projects shipped"],
+    ["15+", "Certificates"],
+    ["1st", "AI Hackathon"]
+  ]
 };
 
-export const flagshipProjects = [
+export const projectCategories = ["All", "Featured", "Full Stack", "AI/ML", "Data Analytics", "DevOps", "Mobile", "Frontend", "Automation"];
+
+export const projects = [
   {
-    id: "recoverforge",
     slug: "recoverforge",
     title: "RecoverForge",
-    badge: "Razorpay AI Buildathon · Track 3",
-    tagline: "Autonomous event-driven payment recovery agent for failed checkouts",
-    tracks: ["devops", "fullstack"],
-    primaryTrack: "devops",
-    problem:
-      "Over 20% of Indian online checkouts fail due to 3D-Secure timeouts, UPI app drop-offs, and transient gateway glitches. Standard merchant notifications are cryptic error codes, and manual recovery outreach is impossible at scale.",
-    architecture: {
-      client: "React 18 merchant audit dashboard with live webhook activity feed and recovery timeline drawer",
-      api: "Express raw buffer endpoint verifying HMAC-SHA256 signatures via crypto.timingSafeEqual with X-Razorpay-Event-Id idempotency",
-      queue: "node-cron state machine with atomic MongoDB findOneAndUpdate locks managing 3-tier exponential cadence (+1, +3, +7 days)",
-      db: "MongoDB integer-paise accounting ledger + OpenAI GPT-4o-mini telemetry classifier (with deterministic heuristic fallback)"
-    },
-    flowSteps: [
-      { name: "Webhook Ingest", desc: "payment.failed raw stream + HMAC-SHA256" },
-      { name: "Idempotency Gate", desc: "Deduplication via X-Razorpay-Event-Id" },
-      { name: "AI Classifier", desc: "GPT-4o-mini categorizes failure mode" },
-      { name: "Link Factory", desc: "Razorpay Payment Link (48-hr TTL, amount in paise)" },
-      { name: "Cadence Dispatch", desc: "Atomic locks + 3-step exponential retry" }
-    ],
-    metric: "48-hr dynamic link TTL, 3-tier exponential retry (+1, +3, +7d), zero contact on fraud flags",
-    stack: ["Node.js", "Express", "React", "MongoDB", "Razorpay SDK", "OpenAI GPT-4o-mini", "Docker Compose", "AWS EC2"],
-    highlights: [
-      "Built for Razorpay AI Buildathon (Track 3: AI Revenue Recovery)",
-      "Timing-safe HMAC-SHA256 verification on raw HTTP request buffers",
-      "Atomic database lock guards prevent race conditions in background cron cadences",
-      "Zero-contact policy immediately drops outreach on fraud or opt-out tokens"
-    ],
+    year: "2026",
+    status: "Featured",
+    category: "DevOps",
     repo: "https://github.com/nik1062/RecoverForge",
-    live: null
+    summary:
+      "Autonomous event-driven payment recovery agent for failed checkouts with raw buffer HMAC-SHA256 signature verification, X-Event-Id deduplication, and atomic MongoDB cadence locks.",
+    problem:
+      "Over 20% of online checkouts fail due to 3D-Secure timeouts, UPI app drop-offs, and transient gateway glitches. Standard merchant notifications are cryptic error codes, and manual recovery outreach is impossible at scale.",
+    outcome:
+      "Built for Razorpay AI Buildathon (Track 3). Features 48-hr dynamic link TTLs, 3-tier exponential retry (+1, +3, +7d), and zero contact on fraud flags.",
+    tags: ["Node.js", "Express", "MongoDB", "Razorpay SDK", "OpenAI GPT-4o-mini", "Docker Compose", "AWS EC2"],
+    highlights: ["Razorpay Buildathon Track 3", "Timing-safe HMAC-SHA256 verification", "Atomic findOneAndUpdate locks", "Dynamic 48h payment links"],
+    visual: "security"
   },
   {
-    id: "codemeet-ai",
     slug: "codemeet-ai",
     title: "CodeMeet AI",
-    badge: "Multiplayer Engine",
-    tagline: "Real-time technical interview platform with CRDT sync & WebRTC grid",
-    tracks: ["fullstack", "devops"],
-    primaryTrack: "fullstack",
+    year: "2026",
+    status: "Featured",
+    category: "Full Stack",
+    repo: "https://github.com/nik1062",
+    summary:
+      "Real-time technical interview platform featuring conflict-free CRDT synchronization (Yjs), multi-party WebRTC video/audio mesh, and an integrated Monaco code editor.",
     problem:
       "Traditional technical interview setups require juggling separate coding pads, disjointed video calls, and manual note-taking, leading to editing conflicts, high audio-video latency, and zero automated assessment.",
-    architecture: {
-      client: "React 18 Monaco Editor wrapper with Zustand state store and custom LiveKit video grid (2 to 6+ participants)",
-      api: "Node.js WebSocket gateway with Yjs CRDT room provider for concurrent conflict-free character sync",
-      queue: "Worker-thread execution queue running in-browser code evaluation with paste-burst plagiarism detection",
-      db: "Interview session logs, keystroke replay buffers, and automated grading reports"
-    },
-    flowSteps: [
-      { name: "Monaco Client", desc: "Collaborative editor with dual named cursors" },
-      { name: "Yjs CRDT Engine", desc: "Delta synchronization over persistent WebSockets" },
-      { name: "LiveKit SFU", desc: "Low-latency WebRTC video & audio mesh" },
-      { name: "Sandbox Runner", desc: "Isolated execution environment with timeout limits" },
-      { name: "LLM Evaluator", desc: "Automated test verification & complexity score" }
-    ],
-    metric: "<50ms keystroke sync latency with 100% conflict-free CRDT resolution for up to 6 participants",
-    stack: ["Node.js", "React", "Yjs (CRDT)", "WebSockets", "LiveKit (WebRTC)", "Zustand", "Zod", "Docker", "Jest"],
-    highlights: [
-      "Multiplayer Monaco code editor synchronized using Yjs Conflict-Free Replicated Data Types",
-      "WebRTC video mesh powered by LiveKit SFU supporting multi-party interviews",
-      "Real-time paste-burst detection and keystroke replay for academic integrity",
-      "Dockerized sandbox runner for multi-language code evaluation"
-    ],
-    repo: "https://github.com/nik1062", // TODO: Update with direct CodeMeet AI repository link when public
-    live: null // TODO: Update with live deployment URL
+    outcome:
+      "Achieved sub-50ms keystroke sync latency with 100% conflict-free CRDT resolution for up to 6 concurrent participants.",
+    tags: ["React", "Node.js", "Yjs (CRDT)", "WebSockets", "LiveKit (WebRTC)", "Monaco Editor", "Docker"],
+    highlights: ["Multiplayer Monaco code editor", "Yjs CRDT delta synchronization", "LiveKit SFU video & audio mesh", "Keystroke replay telemetry"],
+    visual: "ai"
   },
   {
-    id: "medisync-pos",
     slug: "medisync-pos",
     title: "MediSync (ClinicOS)",
-    badge: "Unified Healthcare Platform",
-    tagline: "Cross-platform patient mobile app & clinic POS with real-time OPD queue",
-    tracks: ["fullstack", "devops"],
-    primaryTrack: "fullstack",
-    problem:
-      "Outpatient clinics in India suffer from congested waiting rooms, desynchronized token numbers, and detached billing registers, creating long patient wait times and administrative reconciliation errors.",
-    architecture: {
-      client: "Flutter mobile app (Riverpod) for patient token booking + React clinic dashboard for front-desk operators",
-      api: "Express.js REST backend with dual-token authentication (Access JWT + Refresh Token in HttpOnly cookies)",
-      queue: "Socket.io real-time event bus broadcasting token status across patient devices and waiting-room displays",
-      db: "PostgreSQL with Sequelize ORM executing ACID transactions for doctor consultations and POS invoices"
-    },
-    flowSteps: [
-      { name: "Patient App", desc: "Flutter + Riverpod real-time appointment booking" },
-      { name: "Auth Layer", desc: "Dual-token JWT (access + refresh rotation)" },
-      { name: "Socket.io Bus", desc: "Live OPD queue status pushed to displays" },
-      { name: "Doctor Portal", desc: "Consultation logs & digital prescription records" },
-      { name: "POS Register", desc: "ACID billing transaction in PostgreSQL" }
-    ],
-    metric: "Sub-second token queue sync across mobile and clinic screens; zero counter race conditions",
-    stack: ["Flutter", "Dart", "Riverpod", "React", "Node.js", "PostgreSQL", "Sequelize", "Socket.io", "Docker"],
-    highlights: [
-      "Dual-token authentication architecture with secure refresh token rotation",
-      "Real-time WebSocket token queue connecting patient smartphones to reception screens",
-      "PostgreSQL ACID-compliant billing engine with pharmacy and consult itemization",
-      "Cross-platform Flutter build with modular state management using Riverpod"
-    ],
+    year: "2026",
+    status: "Featured",
+    category: "Full Stack",
     repo: "https://github.com/nik1062/MediSync-POS",
-    live: null
+    summary:
+      "Cross-platform patient mobile app (Flutter/Riverpod) and clinic POS system with real-time OPD token queue, dual-token JWT authentication, and ACID billing transactions.",
+    problem:
+      "Outpatient clinics suffer from congested waiting rooms, desynchronized token numbers, and detached billing registers, creating long patient wait times and administrative reconciliation errors.",
+    outcome:
+      "Sub-second token queue sync across mobile and reception displays with zero counter race conditions and PostgreSQL ACID consistency.",
+    tags: ["Flutter", "Dart", "Riverpod", "React", "Node.js", "PostgreSQL", "Socket.io", "Docker"],
+    highlights: ["Flutter mobile patient app", "Dual-token JWT auth rotation", "Socket.io real-time token queue", "PostgreSQL ACID billing"],
+    visual: "data"
   },
   {
-    id: "coldmailforge",
     slug: "coldmailforge",
     title: "ColdMailForge",
-    badge: "Production SaaS Engine",
-    tagline: "AI cold outreach platform with Razorpay credit ledger & multi-cadence sequence generator",
-    tracks: ["fullstack", "devops"],
-    primaryTrack: "fullstack",
-    problem:
-      "Generic B2B cold email templates suffer from abysmal reply rates (<2%). Early-stage founders waste hours drafting multi-day follow-up cadences and lack a reliable system to automate sequences.",
-    architecture: {
-      client: "React 18 + Tailwind CSS application featuring live credit meter, sequence editor, and admin analytics",
-      api: "Node.js Express backend with JWT auth, email OTP verification, and Razorpay webhook validation",
-      queue: "Nodemailer dispatch queue configured with automated 3-cadence follow-up intervals (Day 3, Day 7, Day 14)",
-      db: "MongoDB database tracking atomic credit deductions (50 free credits on signup) and email generation logs"
-    },
-    flowSteps: [
-      { name: "User Auth", desc: "Email OTP verification + JWT session" },
-      { name: "Credit Meter", desc: "Transactional credit check (50 credits on signup)" },
-      { name: "AI Synthesis", desc: "GPT-4o-mini personalized cold copy generation" },
-      { name: "Sequence Builder", desc: "Automated 3-step follow-up (Day 3, 7, 14)" },
-      { name: "Razorpay Billing", desc: "Webhook-verified credit recharge engine" }
-    ],
-    metric: "3-stage cadence synthesis (Day 3, Day 7, Day 14) with transactional credit deduction",
-    stack: ["React", "Node.js", "Express", "MongoDB", "Razorpay", "OpenAI GPT-4o-mini", "Tailwind CSS", "Docker"],
-    highlights: [
-      "Integrated Razorpay billing engine with atomic credit decrement per generation",
-      "Dual-tier sequence generator producing initial outreach plus 3 follow-ups",
-      "Complete admin management dashboard for user verification, credit limits, and audit logs",
-      "Containerized deployment via Docker Compose with isolated environment secrets"
-    ],
+    year: "2026",
+    status: "Featured",
+    category: "Full Stack",
     repo: "https://github.com/nik1062/ColdMailForge",
-    live: null
-  }
-];
-
-export const secondaryProjects = [
+    summary:
+      "AI cold outreach SaaS platform with Razorpay credit ledger, multi-cadence sequence generator, and automated follow-up scheduling.",
+    problem:
+      "Generic cold email templates have abysmal reply rates (<2%). Early-stage founders waste hours drafting follow-up cadences and lack a reliable system to automate sequences.",
+    outcome:
+      "Delivered a production-ready SaaS engine with integrated Razorpay billing, transactional credit deductions, and 3-stage cadence synthesis.",
+    tags: ["React", "Node.js", "Express", "MongoDB", "Razorpay", "OpenAI GPT-4o-mini", "Docker"],
+    highlights: ["Razorpay credit ledger engine", "Dual-tier 3-stage sequence generator", "Admin audit & verification dashboard", "Dockerized deployment"],
+    visual: "automation"
+  },
   {
     slug: "spendlens-ai-spend-audit",
-    title: "SpendLens — AI Spend Audit",
-    tracks: ["fullstack"],
-    summary: "Audits AI tool spending for startup teams, comparing subscription redundancies and pricing curves.",
-    stack: ["TypeScript", "React", "Testing", "Documentation"],
+    title: "SpendLens - AI Spend Audit",
+    year: "2026",
+    status: "Featured",
+    category: "AI/ML",
     repo: "https://github.com/nik1062/Ai-spend-audit",
-    live: "https://spendlens.vercel.app"
+    live: "https://spendlens.vercel.app",
+    summary:
+      "A TypeScript product that audits AI tool spending for startup teams and suggests savings by comparing tools, pricing, and usage patterns.",
+    problem:
+      "Startup teams often subscribe to overlapping AI tools without a clear view of monthly cost, duplicated features, or switching opportunities.",
+    outcome:
+      "Built a structured audit experience with pricing data, prompts, metrics, tests, and product documentation that makes the project feel like a real SaaS prototype.",
+    tags: ["TypeScript", "AI Tools", "Product Docs", "Testing"],
+    highlights: ["Architecture documentation", "Pricing/economics model", "Prompt and metrics docs", "GitHub Pages enabled"],
+    visual: "ai"
+  },
+  {
+    slug: "restropro-saas-pos",
+    title: "RESTROPro SaaS POS",
+    year: "2026",
+    status: "Case Study",
+    category: "Full Stack",
+    repo: "https://github.com/nik1062/Resturant_POS-system",
+    summary:
+      "Restaurant POS system for cafes, hotels, food trucks, and restaurants with React frontend, Express backend, MySQL database, and deployment planning.",
+    problem:
+      "Small restaurants need fast order handling, billing, menu control, and inventory visibility without a heavy enterprise system.",
+    outcome:
+      "Designed as a SaaS-style POS with frontend/backend/database separation, making it one of the strongest full-stack projects in your public GitHub.",
+    tags: ["React", "Express", "MySQL", "Docker"],
+    highlights: ["Frontend/backend separation", "Database folder", "SaaS positioning", "Restaurant operations domain"],
+    visual: "food"
+  },
+  {
+    slug: "smart-library-management",
+    title: "Smart Library Management",
+    year: "2026",
+    status: "Academic Pro",
+    category: "Full Stack",
+    repo: "https://github.com/nik1062/SmartLibraryManagement-",
+    summary:
+      "Full-stack library management application using React, FastAPI, MongoDB, and object-oriented backend principles.",
+    problem:
+      "Libraries need a simple way to manage books, members, issue/return flows, and records with reliable backend structure.",
+    outcome:
+      "A good proof project for backend thinking because it combines React UI, Python FastAPI, MongoDB, and OOP design.",
+    tags: ["React", "FastAPI", "MongoDB", "OOP"],
+    highlights: ["Python backend", "MongoDB database", "OOP-oriented design", "Docs included"],
+    visual: "library"
+  },
+  {
+    slug: "finvault-finance-dashboard",
+    title: "FinVault Finance Dashboard",
+    year: "2026",
+    status: "Live",
+    category: "Data Analytics",
+    repo: "https://github.com/nik1062/FINANCE-DASHBOARD",
+    live: "https://finance-dashboard-pink-gamma.vercel.app",
+    summary:
+      "Modern responsive finance dashboard built with React and charting, focused on clean visual reporting and dashboard UI structure.",
+    problem:
+      "Finance data is easier to understand when metrics, trends, and categories are presented in a focused dashboard experience.",
+    outcome:
+      "Shows your dashboard/data visualization side and pairs well with Power BI and analytics certifications.",
+    tags: ["React", "Charts", "Dashboard", "Analytics"],
+    highlights: ["Live Vercel demo", "Finance domain", "Responsive layout", "Dashboard storytelling"],
+    visual: "data"
   },
   {
     slug: "focusflow-study-tracker",
     title: "FocusFlow Study Tracker",
-    tracks: ["fullstack"],
-    summary: "Flutter-based productivity tracker with Pomodoro focus sessions, daily streaks, and streak gamification.",
-    stack: ["Flutter", "Dart", "Firebase", "Gamification"],
+    year: "2026",
+    status: "Mobile",
+    category: "Mobile",
     repo: "https://github.com/nik1062/studytrackerapp",
-    live: "https://studytrackerapp-one.vercel.app"
-  },
-  {
-    slug: "trading-bot",
-    title: "Binance Futures Trading Bot",
-    tracks: ["devops", "backend"],
-    summary: "Python trading bot for Binance Futures Testnet with MARKET and LIMIT orders, input validation, and rigorous logging.",
-    stack: ["Python", "Binance API", "Logging", "CLI"],
-    repo: "https://github.com/nik1062/trading_bot"
+    live: "https://studytrackerapp-one.vercel.app",
+    summary:
+      "Flutter study tracker with session tracking, goals, achievements, and gamification for productivity-focused learners.",
+    problem:
+      "Students need a lightweight way to track study consistency, focus sessions, goals, and progress.",
+    outcome:
+      "Adds mobile development depth to your portfolio and shows you can build beyond web apps.",
+    tags: ["Flutter", "Dart", "Productivity", "Gamification"],
+    highlights: ["Cross-platform app", "Goal tracking", "Gamified study flow", "Live web preview"],
+    visual: "mobile"
   },
   {
     slug: "n8n-email-assistant",
-    title: "n8n Workflow Automation Agent",
-    tracks: ["devops"],
-    summary: "AI automation pipeline combining Google Gemini and Gmail integration to parse and dispatch structured email workflows.",
-    stack: ["n8n", "Gemini API", "Gmail Webhooks", "Automation"],
-    repo: "https://github.com/nik1062/n8n-agents"
+    title: "n8n Email Assistant Agent",
+    year: "2025",
+    status: "Automation",
+    category: "Automation",
+    repo: "https://github.com/nik1062/n8n-agents",
+    summary:
+      "Workflow automation agent using Google Gemini and Gmail integration to draft and send professional emails from structured prompts.",
+    problem:
+      "Writing repeat professional emails manually slows down repetitive communication workflows.",
+    outcome:
+      "A compact but memorable automation project that fits your AI agent and n8n learning direction.",
+    tags: ["n8n", "Gemini", "Gmail", "Automation"],
+    highlights: ["Workflow JSON included", "Screenshot included", "AI agent positioning", "Practical productivity use case"],
+    visual: "automation"
+  },
+  {
+    slug: "health-cost-prediction",
+    title: "Health Cost Prediction",
+    year: "2025",
+    status: "ML",
+    category: "Data Analytics",
+    repo: "https://github.com/nik1062/-Linear-Regression-Health-Costs-Calculator",
+    summary:
+      "Linear regression model that predicts healthcare costs from insurance-style demographic features and evaluates error with MAE.",
+    problem:
+      "Healthcare cost estimation is a useful regression problem for practicing feature handling, model training, and evaluation.",
+    outcome:
+      "Good supporting proof for Python, data preprocessing, and machine learning fundamentals.",
+    tags: ["Python", "Regression", "Scikit-learn", "MAE"],
+    highlights: ["Regression workflow", "Model evaluation", "Healthcare dataset", "Python ML basics"],
+    visual: "security"
+  },
+  {
+    slug: "private-project-showcase",
+    title: "Private Project Showcase",
+    year: "2026",
+    status: "Private Repo",
+    category: "DevOps",
+    summary:
+      "Reserved section for your best private project once you share the name, stack, screenshots, and a safe description.",
+    problem:
+      "Some strong projects cannot expose source code publicly, but they can still be presented honestly through case studies.",
+    outcome:
+      "We can show the product thinking, architecture, screenshots, and your role without exposing private files.",
+    tags: ["Private", "Case Study", "Screenshots", "Demo on request"],
+    highlights: ["No public source required", "Can show screenshots", "Can use private-repo badge", "Great for serious work"],
+    visual: "devops",
+    private: true
   }
 ];
 
-export const skillsByTrack = {
-  devops: [
-    { name: "Docker & Compose", category: "Containers", note: "Containerized multi-tier microservices (backend, DB, worker)" },
-    { name: "AWS (EC2, S3)", category: "Cloud Infra", note: "Virtual server management, security groups, SSH key deployment" },
-    { name: "Linux & Bash", category: "OS / Scripting", note: "Systemd services, Cron jobs, shell automation, log rotation" },
-    { name: "NGINX & Reverse Proxy", category: "Networking", note: "SSL termination, proxy pass headers, rate limiting" },
-    { name: "GitHub Actions", category: "CI / CD", note: "Automated linting, test pipelines, and build validation" },
-    { name: "PM2", category: "Process Management", note: "Cluster mode, zero-downtime reloads, memory leak guards" },
-    { name: "Webhooks & HMAC-SHA256", category: "Event Security", note: "Timing-safe signature verification on raw stream buffers" },
-    { name: "PostgreSQL & Sequelize", category: "Databases", note: "ACID transactions, relational indexing, schema migrations" }
-  ],
-  fullstack: [
-    { name: "React 18 / 19", category: "Frontend Core", note: "Hooks, Concurrent Mode, custom stores, performance optimization" },
-    { name: "Node.js & Express", category: "Backend Core", note: "RESTful architecture, raw buffer pipelines, middleware design" },
-    { name: "TypeScript & JavaScript", category: "Languages", note: "Strict typing, async/await, ESNext, functional patterns" },
-    { name: "Yjs & CRDTs", category: "Real-Time Sync", note: "Multiplayer state synchronization with zero merge conflicts" },
-    { name: "WebSockets & Socket.io", category: "Networking", note: "Bidirectional event transport for live queues and chat" },
-    { name: "LiveKit & WebRTC", category: "Media Streaming", note: "Selective Forwarding Unit (SFU) audio/video integration" },
-    { name: "PostgreSQL & MongoDB", category: "Persistence", note: "Relational ACID consistency + Document flexibility" },
-    { name: "Flutter & Riverpod", category: "Mobile", note: "Cross-platform reactive state management and native UI" }
-  ]
-};
+export const skills = [
+  { name: "React", group: "Frontend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { name: "TypeScript", group: "Frontend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
+  { name: "JavaScript", group: "Frontend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
+  { name: "HTML5", group: "Frontend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
+  { name: "CSS3", group: "Frontend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
+  { name: "Tailwind", group: "Frontend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
+  { name: "Node.js", group: "Backend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+  { name: "Express", group: "Backend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" },
+  { name: "FastAPI", group: "Backend", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
+  { name: "Python", group: "AI/Data", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "MongoDB", group: "Database", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
+  { name: "MySQL", group: "Database", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  { name: "Firebase", group: "Cloud", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" },
+  { name: "Docker", group: "DevOps", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
+  { name: "AWS", group: "Cloud", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" },
+  { name: "Flutter", group: "Mobile", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" },
+  { name: "Git", group: "Tools", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+  { name: "GitHub", group: "Tools", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" }
+];
+
+export const skillGroups = [
+  {
+    index: "01",
+    title: "Frontend Engineering",
+    copy: "React, TypeScript, JavaScript, HTML, CSS, Tailwind, Vite, responsive UI, accessibility, and product-oriented interfaces."
+  },
+  {
+    index: "02",
+    title: "Backend & Databases",
+    copy: "Node.js, Express.js, FastAPI, REST APIs, MongoDB, MySQL, Firebase, authentication, and data modelling."
+  },
+  {
+    index: "03",
+    title: "AI, ML & Analytics",
+    copy: "Python, Pandas, NumPy, Scikit-learn, ChatGPT/Gemini workflows, Power BI dashboards, and data storytelling."
+  },
+  {
+    index: "04",
+    title: "Automation, Cloud & Mobile",
+    copy: "n8n agents, Docker basics, GitHub Actions, AWS EC2, Linux, Firebase Hosting, Vercel, Netlify, and Flutter."
+  }
+];
 
 export const credentials = [
   {
-    type: "Award",
-    title: "First Prize — NEURA '25 AI Hackathon",
+    type: "Achievement",
+    title: "First Prize - NEURA '25 AI Hackathon",
     issuer: "MNM Jain Engineering College",
     date: "Sep 2025",
-    copy: "Secured 1st place out of 25 teams for an AI automation system addressing UN SDG-4 with practical education impact.",
+    copy: "AI-based automation innovation aligned with UN SDG-4.",
     link: "/assets/certificates/NEURA-25-AI-Hackathon.pdf"
   },
   {
@@ -242,7 +287,7 @@ export const credentials = [
     title: "GenAI Powered Data Analytics",
     issuer: "Forage",
     date: "Oct 2025",
-    copy: "Executed EDA, risk profiling, delinquency prediction models, and automated collections strategy.",
+    copy: "EDA, risk profiling, delinquency prediction, and AI collections strategy.",
     link: "/assets/certificates/GenAI-Data-Analytics-Forage.pdf"
   },
   {
@@ -250,36 +295,34 @@ export const credentials = [
     title: "Google Analytics Certification",
     issuer: "Google Skillshop",
     date: "Dec 2024",
-    copy: "GA4 property configuration, event attribution measurement, custom reporting, and telemetry analysis.",
+    copy: "GA4 setup, reports, measurement, and marketing insight foundations.",
     link: "/assets/certificates/Google-Analytics-Certification.pdf"
   },
   {
-    type: "Certification",
+    type: "Machine Learning",
     title: "Intro to Machine Learning",
-    issuer: "Kaggle",
+    issuer: "Kaggle / ML Learning",
     date: "Jun 2025",
-    copy: "Core ML workflows, regression models, feature engineering, and validation metrics.",
-    link: "/assets/certificates/Intro-to-Machine-Learning.png"
+    copy: "Foundational ML workflow and model-building practice.",
+    link: "/assets/certificates/Intro-to-Machine-Learning.png",
+    image: "/assets/certificates/Intro-to-Machine-Learning.png"
   }
 ];
 
-export const experienceTimeline = [
+export const timeline = [
   {
-    period: "2023 — 2027",
-    role: "B.Tech in Information Technology",
-    organization: "Anna University, Chennai",
-    details: "CGPA 8.5 / 10. Core coursework: Operating Systems, Distributed Systems, Database Management Systems, Data Structures & Algorithms, Computer Networks, and Cloud Infrastructure."
+    time: "2023 - 2027",
+    title: "B.Tech Information Technology",
+    copy: "Anna University, Chennai. CGPA 8.5 / 10 with focus on DBMS, OS, web technologies, DSA, and AI/ML."
   },
   {
-    period: "2025 — Present",
-    role: "Founder & Lead Engineer",
-    organization: "Zorbit Studio",
-    details: "Architecting and shipping production SaaS products and client systems, including ColdMailForge and restaurant management platforms."
+    time: "2025",
+    title: "NEURA '25 AI Hackathon Winner",
+    copy: "Secured first prize for an AI automation and productivity project with practical education impact."
   },
   {
-    period: "2025",
-    role: "Lead Hackathon Builder",
-    organization: "NEURA '25 & Razorpay AI Buildathon",
-    details: "Built RecoverForge (autonomous payment recovery agent) and won 1st Prize at NEURA '25 AI Hackathon for workflow automation."
+    time: "2025 - 2026",
+    title: "Full-stack + Product Expansion",
+    copy: "Building React, Node, Firebase, FastAPI, MongoDB, dashboards, automation agents, Flutter apps, and cloud-ready workflows."
   }
 ];
