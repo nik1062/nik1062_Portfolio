@@ -39,6 +39,7 @@ import SEO from "./components/SEO";
 import LoginPage from "./components/LoginPage";
 import AdminPanel from "./components/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Magnet from "./components/bits/Magnet/Magnet";
 
 const navItems = [
   ["Home", "/", Home],
@@ -143,6 +144,7 @@ function App() {
 
   return (
     <HashRouter>
+      <div className="noise-overlay" aria-hidden="true" />
       <div className="ambient-grid" />
       <DesktopNav />
       <MobileHeader menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
@@ -236,10 +238,12 @@ function ProfileRail() {
           <span>MERN</span>
           <span>Python</span>
         </div>
-        <a className="rail-button" href={profile.resume} target="_blank" rel="noopener">
-          <Download size={16} />
-          Resume
-        </a>
+        <Magnet padding={25}>
+          <a className="rail-button" href={profile.resume} target="_blank" rel="noopener">
+            <Download size={16} />
+            Resume
+          </a>
+        </Magnet>
       </motion.div>
     </aside>
   );
@@ -260,13 +264,17 @@ function HomePage({ projects }) {
         <h2>{profile.headline}</h2>
         <p className="hero-copy">{profile.summary}</p>
         <div className="hero-actions">
-          <Link className="primary-button" to="/projects">
-            View Work
-          </Link>
-          <Link className="secondary-button" to="/resume">
-            <Download size={17} />
-            Resume Hub
-          </Link>
+          <Magnet padding={30}>
+            <Link className="primary-button" to="/projects">
+              View Work
+            </Link>
+          </Magnet>
+          <Magnet padding={30}>
+            <Link className="secondary-button" to="/resume">
+              <Download size={17} />
+              Resume Hub
+            </Link>
+          </Magnet>
         </div>
         <div className="hero-metrics">
           {profile.metrics.map(([number, label]) => (
@@ -716,8 +724,21 @@ function ProjectStage({ projects, onSelect }) {
 }
 
 function ProjectCard({ project, active = false, onClick }) {
+  function handleMouseMove(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+  }
+
   return (
-    <motion.article layout className={`project-card visual-${project.visual} ${active ? "active" : ""}`} onClick={onClick}>
+    <motion.article
+      layout
+      className={`project-card visual-${project.visual} ${active ? "active" : ""}`}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+    >
       <div className="project-visual" />
       <div className="project-meta">
         <span>{project.year}</span>
