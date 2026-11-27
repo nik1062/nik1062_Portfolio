@@ -58,8 +58,19 @@ function formatTimeAgo(isoString) {
   }
 }
 
-export default function GitHubProjectsSection({ curatedProjects = [], limit = null }) {
+export default function GitHubProjectsSection({ 
+  curatedProjects = [], 
+  limit = null,
+  activeCategory = null,
+  onSelectCategory = null
+}) {
   const [loading, setLoading] = useState(false);
+  const [localCategory, setLocalCategory] = useState("All");
+
+  const currentCategory = activeCategory !== null && activeCategory !== undefined ? activeCategory : localCategory;
+  const setCategory = onSelectCategory || setLocalCategory;
+
+  const categories = ["All", "Full Stack", "AI/ML", "Data Analytics", "DevOps", "Mobile", "Frontend", "Automation"];
 
   // Runtime deduplication against curated catalog
   const discoveredProjects = useMemo(() => {
@@ -90,8 +101,17 @@ export default function GitHubProjectsSection({ curatedProjects = [], limit = nu
       return true;
     });
 
-    return limit ? filtered.slice(0, limit) : filtered;
-  }, [curatedProjects, limit]);
+    return filtered;
+  }, [curatedProjects]);
+
+  // Filter based on active category
+  const displayedProjects = useMemo(() => {
+    let list = discoveredProjects;
+    if (currentCategory && currentCategory !== "All" && currentCategory !== "Featured") {
+      list = list.filter(p => p.category === currentCategory);
+    }
+    return limit ? list.slice(0, limit) : list;
+  }, [discoveredProjects, currentCategory, limit]);
 
   const lastSynced = rawData?.lastSynced ? formatTimeAgo(rawData.lastSynced) : "Automated";
   const username = rawData?.username || "nik1062";
@@ -133,6 +153,22 @@ export default function GitHubProjectsSection({ curatedProjects = [], limit = nu
         </div>
       </div>
 
+      {/* Category Filter Pills for GitHub projects */}
+      {!limit && (
+        <div className="filter-row github-category-filter">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={currentCategory === cat ? "active" : ""}
+              onClick={() => setCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading ? (
         <div className="github-grid">
           {[1, 2, 3].map((n) => (
@@ -144,9 +180,9 @@ export default function GitHubProjectsSection({ curatedProjects = [], limit = nu
             </div>
           ))}
         </div>
-      ) : discoveredProjects.length > 0 ? (
+      ) : displayedProjects.length > 0 ? (
         <div className="github-grid">
-          {discoveredProjects.map((project) => {
+          {displayedProjects.map((project) => {
             const langColor = LANGUAGE_COLORS[project.language] || "#f5a623";
             return (
               <motion.article
@@ -160,10 +196,15 @@ export default function GitHubProjectsSection({ curatedProjects = [], limit = nu
               >
                 <div className="github-card-specular" />
                 <div className="github-card-topbar">
-                  <span className="github-lang-badge">
-                    <span className="github-lang-dot" style={{ backgroundColor: langColor }} />
-                    {project.language}
-                  </span>
+                  <div className="github-badge-group">
+                    <span className="github-lang-badge">
+                      <span className="github-lang-dot" style={{ backgroundColor: langColor }} />
+                      {project.language}
+                    </span>
+                    <span className="github-category-badge">
+                      {project.category || "Full Stack"}
+                    </span>
+                  </div>
                   <div className="github-stats">
                     {project.stars > 0 && (
                       <span className="stat-item" title={`${project.stars} stars`}>

@@ -4,6 +4,7 @@ import {
   filterRepositories,
   deduplicateRepositories,
   transformRepository,
+  inferCategory,
   CONFIG
 } from '../scripts/sync-github-projects.js';
 
@@ -148,6 +149,7 @@ test('GitHub Sync Engine - transformRepository', async (t) => {
     assert.equal(transformed.id, 987654321);
     assert.equal(transformed.name, 'ai-doc-summarizer');
     assert.equal(transformed.displayName, 'Ai Doc Summarizer');
+    assert.equal(transformed.category, 'AI/ML');
     assert.equal(transformed.description, 'An intelligent PDF summarizer built with Python and LangChain.');
     assert.equal(transformed.htmlUrl, 'https://github.com/nik1062/ai-doc-summarizer');
     assert.equal(transformed.homepage, 'https://summarizer.demo.app');
@@ -178,5 +180,38 @@ test('GitHub Sync Engine - transformRepository', async (t) => {
     assert.equal(transformed.stars, 0);
     assert.equal(transformed.forks, 0);
     assert.equal(transformed.license, null);
+  });
+});
+
+test('GitHub Sync Engine - inferCategory', async (t) => {
+  await t.test('infers AI/ML for AI topics and Python', () => {
+    assert.equal(inferCategory(['portfolio', 'llm', 'rag'], 'Python'), 'AI/ML');
+    assert.equal(inferCategory(['portfolio'], 'Python'), 'AI/ML');
+  });
+
+  await t.test('infers Data Analytics for analytics topics', () => {
+    assert.equal(inferCategory(['portfolio', 'powerbi', 'sql'], 'SQL'), 'Data Analytics');
+    assert.equal(inferCategory(['portfolio', 'tableau'], 'Python'), 'Data Analytics');
+  });
+
+  await t.test('infers DevOps for docker/ci-cd topics', () => {
+    assert.equal(inferCategory(['portfolio', 'docker', 'k8s'], 'Shell'), 'DevOps');
+  });
+
+  await t.test('infers Mobile for Flutter and Dart', () => {
+    assert.equal(inferCategory(['portfolio', 'flutter'], 'Dart'), 'Mobile');
+  });
+
+  await t.test('infers Automation for n8n or bot topics', () => {
+    assert.equal(inferCategory(['portfolio', 'n8n'], 'JavaScript'), 'Automation');
+  });
+
+  await t.test('infers Frontend for UI/React topics', () => {
+    assert.equal(inferCategory(['portfolio', 'tailwind', 'ui'], 'HTML'), 'Frontend');
+  });
+
+  await t.test('infers Full Stack as default for MERN or JS/TS', () => {
+    assert.equal(inferCategory(['portfolio', 'mern'], 'JavaScript'), 'Full Stack');
+    assert.equal(inferCategory(['portfolio'], 'TypeScript'), 'Full Stack');
   });
 });

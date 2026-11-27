@@ -100,6 +100,57 @@ export function deduplicateRepositories(discoveredRepos, curatedProjects = []) {
 }
 
 /**
+ * Automatically infer portfolio category from GitHub topics and primary language
+ */
+export function inferCategory(topics = [], language = '') {
+  const t = Array.isArray(topics) ? topics.map(topic => String(topic).toLowerCase()) : [];
+  const lang = String(language || '').toLowerCase();
+
+  // 1. AI/ML
+  if (t.some(x => ['ai', 'ml', 'machine-learning', 'deep-learning', 'nlp', 'llm', 'gemini', 'openai', 'langchain', 'rag', 'vision', 'pytorch', 'tensorflow'].includes(x))) {
+    return 'AI/ML';
+  }
+
+  // 2. Data Analytics
+  if (t.some(x => ['data', 'analytics', 'eda', 'powerbi', 'tableau', 'pandas', 'numpy', 'visualization', 'sql', 'bi'].includes(x))) {
+    return 'Data Analytics';
+  }
+
+  // 3. DevOps
+  if (t.some(x => ['devops', 'docker', 'kubernetes', 'k8s', 'ci-cd', 'github-actions', 'aws', 'cloud', 'linux', 'terraform', 'nginx'].includes(x))) {
+    return 'DevOps';
+  }
+
+  // 4. Mobile
+  if (t.some(x => ['flutter', 'react-native', 'android', 'ios', 'mobile', 'dart', 'swift', 'kotlin'].includes(x)) || lang === 'dart') {
+    return 'Mobile';
+  }
+
+  // 5. Automation
+  if (t.some(x => ['automation', 'n8n', 'bot', 'scraper', 'crawler', 'workflow', 'cron'].includes(x))) {
+    return 'Automation';
+  }
+
+  // 6. Full Stack
+  if (t.some(x => ['fullstack', 'full-stack', 'mern', 'mean', 'backend', 'node', 'express', 'mongodb', 'postgresql', 'fastapi', 'django'].includes(x))) {
+    return 'Full Stack';
+  }
+
+  // 7. Frontend
+  if (t.some(x => ['frontend', 'ui', 'ux', 'react', 'vue', 'nextjs', 'tailwind', 'css', 'html'].includes(x))) {
+    return 'Frontend';
+  }
+
+  // Language fallbacks
+  if (lang === 'python') return 'AI/ML';
+  if (lang === 'javascript' || lang === 'typescript') return 'Full Stack';
+  if (lang === 'html' || lang === 'css') return 'Frontend';
+  if (lang === 'shell' || lang === 'dockerfile') return 'DevOps';
+
+  return 'Full Stack';
+}
+
+/**
  * Transform raw GitHub API payload into clean portfolio project metadata
  */
 export function transformRepository(raw) {
@@ -121,10 +172,13 @@ export function transformRepository(raw) {
     }
   }
 
+  const category = inferCategory(raw.topics, raw.language);
+
   return {
     id: raw.id || 0,
     name: name,
     displayName: displayName,
+    category: category,
     description: raw.description ? String(raw.description).trim() : 'Project repository published on GitHub with #portfolio tag.',
     htmlUrl: raw.html_url || `https://github.com/${CONFIG.username}/${name}`,
     homepage: homepage,

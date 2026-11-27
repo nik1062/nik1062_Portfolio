@@ -368,7 +368,7 @@ function ProjectsPage({ projects }) {
         </div>
       </section>
 
-      <GitHubProjectsSection curatedProjects={projects} />
+      <GitHubProjectsSection curatedProjects={projects} activeCategory={filter} onSelectCategory={setFilter} />
     </PageShell>
   );
 }

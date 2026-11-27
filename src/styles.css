@@ -1497,6 +1497,30 @@ main {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 14px;
+  gap: 12px;
+}
+
+.github-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.github-category-badge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  padding: 2px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.02em;
+}
+
+.github-category-filter {
+  margin-bottom: 24px;
 }
 
 .github-lang-badge {
